@@ -17,7 +17,12 @@ func NewInitCommandHandler() *InitCommandHandler {
 
 func (h *InitCommandHandler) Handle(cmd *cobra.Command, args []string) {
 	wsp := workspace.NewWorkspaceManager()
-	err := wsp.InitialiseWorkspace()
+	currentDir, err := os.Getwd()
+	if err != nil {
+		fmt.Println(err.Error())
+		os.Exit(1)
+	}
+	err = wsp.InitialiseWorkspace(currentDir)
 	if err != nil {
 		fmt.Println(err.Error())
 		os.Exit(1)

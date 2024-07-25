@@ -7,8 +7,11 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "dodl",
 	Short: "dodl is a cli tool for file management",
-	Run: func(cmd *cobra.Command, args []string) {
-		cmd.Help()
+	Run: func(cmd *cobra.Command, _ []string) {
+		err := cmd.Help()
+		if err != nil {
+			panic(err)
+		}
 	},
 }
 

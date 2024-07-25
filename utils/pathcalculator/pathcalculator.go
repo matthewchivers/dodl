@@ -39,3 +39,12 @@ func CalculateUserDodlDir() (string, error) {
 	}
 	return filepath.Join(userDir, dodlDirName), nil
 }
+
+// GetUserConfigPath calculates the path to the user's configuration file
+func CalculateUserConfigPath() (string, error) {
+	userDodlDir, err := CalculateUserDodlDir()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(userDodlDir, configFile), nil
+}

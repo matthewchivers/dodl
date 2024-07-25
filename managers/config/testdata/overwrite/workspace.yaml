@@ -1,0 +1,5 @@
+docTypes:
+  - id: "fooID"
+    fileNamePattern: "{{.DocID}}.md"
+    topics: ["fooTopic"]
+    editor: "code"

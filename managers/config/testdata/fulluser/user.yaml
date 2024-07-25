@@ -1,0 +1,6 @@
+docTypes:
+  - id: "fooID"
+    directoryPattern: "{{.Year}}/{{.Month}}/{{.Day}}"
+    fileNamePattern: "{{.DocID}}.md"
+    topics: ["fooTopic"]
+    editor: "code"

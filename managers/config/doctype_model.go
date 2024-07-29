@@ -1,5 +1,7 @@
 package config
 
+// DocType is the document type struct.
+// It provides a way to define the structure of a document type in the configuration file
 type DocType struct {
 	// ID is the identifier for the document type (e.g. meeting, note, etc.)
 	ID string `yaml:"id"`
@@ -18,6 +20,8 @@ type DocType struct {
 	Editor string `yaml:"editor,omitempty"`
 }
 
+// Apply "applies" the given DocType to the current DocType.
+// Essentially, it merges the given DocType into the current DocType.
 func (d *DocType) Apply(docType *DocType) {
 	if docType == nil {
 		return
@@ -38,6 +42,7 @@ func (d *DocType) Apply(docType *DocType) {
 	}
 }
 
+// AppendTopicNoDuplicates appends the given topic to the current DocType's topics if it doesn't already exist.
 func (d *DocType) AppendTopicNoDuplicates(topic string) {
 	for _, t := range d.Topics {
 		if t == topic {

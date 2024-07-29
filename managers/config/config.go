@@ -6,14 +6,17 @@ import (
 
 	"github.com/matthewchivers/dodl/managers/workspace"
 	"github.com/matthewchivers/dodl/utils/pathcalculator"
-	"gopkg.in/yaml.v2"
+	yaml "gopkg.in/yaml.v2"
 )
 
+// Manager is the configuration manager struct.
+// It provides a way to load the configuration from the workspace and user configuration files.
 type Manager struct {
 	workspace    *workspace.Manager
 	mergedConfig *Config
 }
 
+// NewManager creates and returns a new configuration manager with the given entry path.
 func NewManager(entryPath string) (*Manager, error) {
 	workspaceManager, err := workspace.GetManager(entryPath)
 	if err != nil {
@@ -24,7 +27,9 @@ func NewManager(entryPath string) (*Manager, error) {
 	}, nil
 }
 
-// GetConfig loads the configuration.
+// GetConfig loads the configuration from the workspace and user configuration files.
+// It returns the merged configuration.
+// If the configuration has already been loaded, it returns the cached configuration.
 func (c *Manager) GetConfig() (*Config, error) {
 	if c.mergedConfig != nil {
 		return c.mergedConfig, nil

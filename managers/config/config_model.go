@@ -1,11 +1,16 @@
 package config
 
 // Config is a struct that holds configuration.
+// Primarily this holds a list of document types.
 type Config struct {
 	// DocTypes is a list of document types
 	DocTypes []DocType `yaml:"docTypes"`
 }
 
+// Apply merges the given Config onto the config on which the method is called.
+// The provided config gains precedence over the existing config.
+// When merging lists, the provided config's list is appended to the existing list
+// unless the entry already exists, at which point that entry is updated.
 func (c *Config) Apply(cfg *Config) {
 	if cfg == nil {
 		return
@@ -17,6 +22,7 @@ func (c *Config) Apply(cfg *Config) {
 	}
 }
 
+// ApplyDoc merges the given DocType onto the config on which the method is called.
 func (c *Config) ApplyDoc(ovrDoc DocType) {
 	found := false
 	for i, doc := range c.DocTypes {

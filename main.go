@@ -1,9 +1,9 @@
 package main
 
 import (
-	"fmt"
+	"github.com/matthewchivers/dodl/cmd"
 )
 
 func main() {
-	fmt.Println("Hello, World!")
+	cmd.Execute()
 }

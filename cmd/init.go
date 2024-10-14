@@ -1,8 +1,7 @@
 package cmd
 
 import (
-	"fmt"
-
+	"github.com/matthewchivers/dodl/core"
 	"github.com/matthewchivers/dodl/models"
 	"github.com/spf13/cobra"
 )
@@ -17,7 +16,6 @@ var initCmd = &cobra.Command{
 }
 
 func runInit(cmd *cobra.Command, args []string) {
-	// Command context preparation
 	cmdCtx := models.CommandContext{
 		Command: "init",
 		Args:    args,
@@ -26,14 +24,5 @@ func runInit(cmd *cobra.Command, args []string) {
 		},
 	}
 
-	// call core logic once implemented
-	fmt.Printf("Command: %s\n", cmdCtx.Command)
-	if len(cmdCtx.Args) == 0 {
-		fmt.Println("No directory specified, using current directory.")
-	} else {
-		cmdCtx.Flags["directory"] = cmdCtx.Args[0]
-		fmt.Printf("Directory: %s\n", cmdCtx.Args[0])
-	}
-	fmt.Printf("Directory Flag: %s\n", cmdCtx.Flags["directory"])
-	fmt.Println("Initialising a new workspace...")
+	core.ExecuteCommand(cmdCtx)
 }

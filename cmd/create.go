@@ -12,7 +12,6 @@ var (
 	dryRun  bool
 )
 
-// createCmd represents the create command
 var createCmd = &cobra.Command{
 	Use:   "create [document_type]",
 	Short: "Create a new document",

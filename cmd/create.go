@@ -1,8 +1,7 @@
 package cmd
 
 import (
-	"fmt"
-
+	"github.com/matthewchivers/dodl/core"
 	"github.com/matthewchivers/dodl/models"
 	"github.com/spf13/cobra"
 )
@@ -38,12 +37,5 @@ func runCreate(cmd *cobra.Command, args []string) {
 			"dryRun": dryRun,
 		},
 	}
-
-	// call core logic once implemented
-	fmt.Printf("Command: %s\n", cmdCtx.Command)
-	fmt.Println("Creating a new document...")
-	fmt.Printf("Document type: %s\n", cmdCtx.Args[0])
-	fmt.Printf("Topic: %s\n", cmdCtx.Flags["topic"])
-	fmt.Printf("Date: %s\n", cmdCtx.Flags["date"])
-	fmt.Printf("Dry run: %t\n", cmdCtx.Flags["dryRun"])
+	core.ExecuteCommand(cmdCtx)
 }

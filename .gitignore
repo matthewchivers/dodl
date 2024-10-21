@@ -26,3 +26,6 @@ go.work.sum
 
 # visual-studio code "vscode" workspace
 .vscode
+
+# dodl workspaces (just in case...)
+.dodl

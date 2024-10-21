@@ -29,3 +29,6 @@ go.work.sum
 
 # dodl workspaces (just in case...)
 .dodl
+
+# build artifacts
+build/

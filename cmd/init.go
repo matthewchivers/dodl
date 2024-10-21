@@ -38,7 +38,7 @@ func runInitE(args []string, wdProv wd.WorkingDirProvider) error {
 		Command: "init",
 		Args:    args,
 		Flags: map[string]interface{}{
-			"directory": targetDir,
+			"targetDirectory": targetDir,
 		},
 		EntryPoint: workingDir,
 	}

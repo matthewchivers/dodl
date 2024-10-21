@@ -5,18 +5,19 @@ import (
 )
 
 type AppContext struct {
-	cmdCtx models.CommandContext
+	cmdCtx *models.CommandContext
 }
 
-func ExecuteCommand(cmdCtx models.CommandContext) {
+func ExecuteCommand(cmdCtx *models.CommandContext) error {
 	appCtx := AppContext{
 		cmdCtx: cmdCtx,
 	}
 
 	switch appCtx.cmdCtx.Command {
 	case "create":
-		create(appCtx)
+		return create(appCtx)
 	case "init":
-		initialise(appCtx)
+		return initialise(appCtx)
 	}
+	return nil
 }

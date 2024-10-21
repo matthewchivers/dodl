@@ -18,6 +18,8 @@ func ExecuteCommand(cmdCtx *models.CommandContext) error {
 		return create(appCtx)
 	case "init":
 		return initialise(appCtx)
+	case "status":
+		return status(appCtx)
 	}
 	return nil
 }

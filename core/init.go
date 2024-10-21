@@ -6,22 +6,33 @@ import (
 	"github.com/matthewchivers/dodl/workspace"
 )
 
-type ErrAlreadyInWorkspace struct{}
-
-func (e ErrAlreadyInWorkspace) Error() string {
-	return "already in a workspace"
-}
-
 func initialise(appCtx AppContext) error {
-	workingDir := appCtx.cmdCtx.EntryPoint
-	// don't allow initialisation of a workspace within a workspace
-	if _, err := workspace.FindWorkspaceRoot(workingDir); err != nil {
-		if err != workspace.ErrNotInWorkspace {
-			return err
-		}
-	} else {
-		return ErrAlreadyInWorkspace{}
+	targetDirectory := appCtx.cmdCtx.Flags["targetDirectory"].(string)
+
+	// Determine if the target directory is already the root of a workspace
+	root, err := workspace.FindWorkspaceRoot(targetDirectory)
+	if err != nil && err != workspace.ErrNotInWorkspace {
+		return err
 	}
-	fmt.Printf("Initialising a new workspace in %s\n", appCtx.cmdCtx.Flags["directory"])
+
+	isReinitialise := false
+	if err == nil && root == targetDirectory {
+		// The target directory is already a workspace root
+		isReinitialise = true
+	}
+
+	// Proceed with initialization (or re-initialization)
+	err = workspace.Initialise(targetDirectory)
+	if err != nil {
+		return err
+	}
+
+	// Output the appropriate message
+	if isReinitialise {
+		fmt.Printf("Re-initialised dodl workspace at %s\n", targetDirectory)
+	} else {
+		fmt.Printf("Initialised new dodl workspace at %s\n", targetDirectory)
+	}
+
 	return nil
 }

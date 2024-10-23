@@ -17,7 +17,6 @@ func NewInitCmd(wdProv wd.WorkingDirProvider) *cobra.Command {
 		Short: "Initialise a new dodl workspace",
 		Long:  `Creates a new dodl workspace in the specified directory (defaults to current working directory).`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			wdProv := &wd.DefaultWorkingDirProvider{}
 			return runInitE(args, wdProv)
 		},
 	}

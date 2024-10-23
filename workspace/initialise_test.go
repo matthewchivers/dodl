@@ -49,25 +49,23 @@ func TestInitialise(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			baseDir, err := os.MkdirTemp("", "testinitialise")
-			assert.NoError(t, err, "failed to create temp dir")
-			defer os.RemoveAll(baseDir)
+			tempDir := t.TempDir()
 
 			for _, existingDir := range tt.existingDirs {
-				path := filepath.Join(baseDir, existingDir)
+				path := filepath.Join(tempDir, existingDir)
 				err := os.MkdirAll(path, os.ModePerm)
 				assert.NoError(t, err, "failed to create existing directory")
 			}
 
 			for _, existingFile := range tt.existingFiles {
-				path := filepath.Join(baseDir, existingFile)
+				path := filepath.Join(tempDir, existingFile)
 				err := os.WriteFile(path, []byte("test"), os.ModePerm)
 				assert.NoError(t, err, "failed to create existing file")
 			}
 
-			targetDir := filepath.Join(baseDir, tt.targetDir)
+			targetDir := filepath.Join(tempDir, tt.targetDir)
 
-			err = workspace.Initialise(targetDir)
+			err := workspace.Initialise(targetDir)
 			if tt.expectedErr {
 				assert.Error(t, err, "expected an error but got none")
 			} else {

@@ -11,8 +11,9 @@ import (
 // TestinitCommandWithMockWorkingDir is the simplest test case for the init command
 // Just check that the command can be created and executed without error
 func TestInitCommandWithMockWorkingDir(t *testing.T) {
+	testDir := t.TempDir()
 	fakeWdProv := &wd.FakeWorkingDirProvider{
-		Dir: "/fake/test/dir",
+		Dir: testDir,
 	}
 
 	initCmd := NewInitCmd(fakeWdProv)

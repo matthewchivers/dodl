@@ -49,10 +49,8 @@ func TestMkDir(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			baseDir, err := os.MkdirTemp("", "testmkdir")
-			assert.NoError(t, err, "failed to create temp dir")
+			baseDir := t.TempDir()
 
-			defer os.RemoveAll(baseDir)
 			for _, existingDir := range tt.existingDirs {
 				path := filepath.Join(baseDir, existingDir)
 				err := os.Mkdir(path, os.ModePerm)
@@ -67,7 +65,7 @@ func TestMkDir(t *testing.T) {
 
 			targetDir := filepath.Join(baseDir, tt.newDirPath)
 
-			err = filesystem.MkDir(targetDir)
+			err := filesystem.MkDir(targetDir)
 			if tt.expectedErr {
 				assert.Error(t, err, "expected an error but got none")
 			} else {

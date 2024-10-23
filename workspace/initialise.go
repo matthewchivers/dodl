@@ -7,31 +7,24 @@ import (
 )
 
 func Initialise(targetDir string) error {
-	workspaceRoot := getRootPath(targetDir)
+	dodlDir := filepath.Join(targetDir, ".dodl")
 
-	err := createWorkspaceRoot(targetDir)
+	err := filesystem.EnsureDirExists(dodlDir)
 	if err != nil {
 		return err
 	}
 
-	err = createTemplatesDir(workspaceRoot)
+	configYamlPath := filepath.Join(dodlDir, "config.yaml")
+	err = filesystem.EnsureFileExists(configYamlPath, []byte(""))
+	if err != nil {
+		return err
+	}
+
+	templatesDirPath := filepath.Join(dodlDir, "templates")
+	err = filesystem.EnsureDirExists(templatesDirPath)
 	if err != nil {
 		return err
 	}
 
 	return nil
-}
-
-func getRootPath(targetDir string) string {
-	return filepath.Join(targetDir, ".dodl")
-}
-
-func createWorkspaceRoot(targetDir string) error {
-	workspaceRootPath := filepath.Join(targetDir, ".dodl")
-	return filesystem.MkDir(workspaceRootPath)
-}
-
-func createTemplatesDir(workspaceRoot string) error {
-	templatesDirPath := filepath.Join(workspaceRoot, "templates")
-	return filesystem.MkDir(templatesDirPath)
 }

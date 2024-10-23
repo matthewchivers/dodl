@@ -4,7 +4,7 @@ import "fmt"
 
 // create is a function that creates a new document.
 func create(appCtx AppContext) error {
-	cmdCtx := appCtx.cmdCtx
+	cmdCtx := appCtx.CmdCtx
 	fmt.Println("Creating a new document...")
 	fmt.Printf("Document type: %s\n", cmdCtx.Flags["document_type"])
 	fmt.Printf("Topic: %s\n", cmdCtx.Flags["topic"])

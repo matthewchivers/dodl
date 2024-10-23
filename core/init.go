@@ -7,22 +7,16 @@ import (
 )
 
 func initialise(appCtx AppContext) error {
-	targetDirectory := appCtx.cmdCtx.Flags["targetDirectory"].(string)
+	targetDirectory := appCtx.CmdCtx.Flags["targetDirectory"].(string)
 
 	// Determine if the target directory is already the root of a workspace
-	root, err := workspace.FindWorkspaceRoot(targetDirectory)
-	if err != nil && err != workspace.ErrNotInWorkspace {
-		return err
-	}
-
 	isReinitialise := false
-	if err == nil && root == targetDirectory {
-		// The target directory is already a workspace root
+	if appCtx.WorkspaceRoot == targetDirectory {
 		isReinitialise = true
 	}
 
 	// Proceed with initialization (or re-initialization)
-	err = workspace.Initialise(targetDirectory)
+	err := workspace.Initialise(targetDirectory)
 	if err != nil {
 		return err
 	}

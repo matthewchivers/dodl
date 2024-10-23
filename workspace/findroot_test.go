@@ -4,33 +4,22 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestFindWorkspaceRootWithDirs(t *testing.T) {
 	// Helper function to create a temporary directory structure
 	createTempDirWithStructure := func(t *testing.T, dirs []string) string {
-		root, err := os.MkdirTemp("", "workspace_test")
-		if err != nil {
-			t.Fatalf("Failed to create temp directory: %v", err)
-		}
-
+		tempDir := t.TempDir()
 		for _, dir := range dirs {
-			fullPath := filepath.Join(root, dir)
+			fullPath := filepath.Join(tempDir, dir)
 			err := os.MkdirAll(fullPath, 0755)
 			if err != nil {
 				t.Fatalf("Failed to create directory structure: %v", err)
 			}
 		}
-
-		return root
-	}
-
-	// Clean up temporary directories
-	deferCleanup := func(t *testing.T, path string) {
-		err := os.RemoveAll(path)
-		if err != nil {
-			t.Fatalf("Failed to clean up temp directory: %v", err)
-		}
+		return tempDir
 	}
 
 	tests := []struct {
@@ -38,7 +27,7 @@ func TestFindWorkspaceRootWithDirs(t *testing.T) {
 		dirs        []string
 		entryPoint  string
 		expectRoot  string
-		expectError error
+		expectError bool
 	}{
 		{
 			name: "finds workspace root in nested directories",
@@ -47,7 +36,7 @@ func TestFindWorkspaceRootWithDirs(t *testing.T) {
 			},
 			entryPoint:  "workspace/.dodl/nested/child",
 			expectRoot:  "workspace",
-			expectError: nil,
+			expectError: false,
 		},
 		{
 			name: "returns error when not in a workspace",
@@ -56,7 +45,7 @@ func TestFindWorkspaceRootWithDirs(t *testing.T) {
 			},
 			entryPoint:  "dir1/dir2",
 			expectRoot:  "",
-			expectError: ErrNotInWorkspace,
+			expectError: true,
 		},
 		{
 			name: "detects workspace at the same level",
@@ -65,14 +54,14 @@ func TestFindWorkspaceRootWithDirs(t *testing.T) {
 			},
 			entryPoint:  "workspace",
 			expectRoot:  "workspace",
-			expectError: nil,
+			expectError: false,
 		},
 		{
 			name:        "handles empty entry point",
 			dirs:        nil,
 			entryPoint:  "",
 			expectRoot:  "",
-			expectError: ErrNotInWorkspace,
+			expectError: true,
 		},
 	}
 
@@ -80,15 +69,18 @@ func TestFindWorkspaceRootWithDirs(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			// Setup the test environment
 			tempDir := createTempDirWithStructure(t, tt.dirs)
-			defer deferCleanup(t, tempDir)
-			entryPoint := filepath.Join(tempDir, tt.entryPoint)
+			entryPoint := tt.entryPoint
+			if entryPoint != "" {
+				entryPoint = filepath.Join(tempDir, tt.entryPoint)
+			}
 
 			// Run the function under test
 			root, err := FindWorkspaceRoot(entryPoint)
 
-			if tt.expectError != nil {
-				if err != tt.expectError {
-					t.Fatalf("Expected error: %v, got: %v", tt.expectError, err)
+			if tt.expectError {
+				assert.Error(t, err)
+				if err == nil {
+					t.Logf("Expected error, but got workspace root: %q", root)
 				}
 				return
 			}

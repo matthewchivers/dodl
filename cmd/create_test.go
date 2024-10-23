@@ -11,8 +11,9 @@ import (
 // TestCreateCommandWithMockWorkingDir is the simplest test case for the create command
 // Just check that the command can be created and executed without error
 func TestCreateCommandWithMockWorkingDir(t *testing.T) {
+	testDir := t.TempDir()
 	fakeWdProv := &wd.FakeWorkingDirProvider{
-		Dir: "/fake/test/dir",
+		Dir: testDir,
 	}
 
 	createCmd := NewInitCmd(fakeWdProv)

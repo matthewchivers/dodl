@@ -30,7 +30,7 @@ func (c *CreateCommand) Execute() error {
 		data[k] = v
 	}
 
-	for k, v := range c.DocType.CustomValues {
+	for k, v := range c.DocType.CustomFields {
 		data[k] = v
 	}
 

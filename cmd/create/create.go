@@ -85,7 +85,7 @@ func runCreateE(args []string, wdProv wd.WorkingDirProvider) error {
 	createCmd := core.CreateCommand{
 		DocName:      docTypeName,
 		DocType:      docType,
-		CustomFields: cfg.CustomValues,
+		CustomFields: cfg.CustomFields,
 		Topic:        topic,
 		AppCtx:       appCtx,
 	}

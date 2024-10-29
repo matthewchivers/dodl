@@ -12,7 +12,7 @@ func TestLoadConfigurationsYamlConfig(t *testing.T) {
 	tempDir := t.TempDir()
 	yamlContent := `
 default_document_type: markdown
-custom_values:
+custom_fields:
   author: "Test User"
 document_types:
   markdown:
@@ -32,7 +32,7 @@ document_types:
 	config, err := LoadConfigurations(options)
 	assert.NoError(t, err)
 	assert.Equal(t, "markdown", config.DefaultDocumentType)
-	assert.Equal(t, "Test User", config.CustomValues["author"])
+	assert.Equal(t, "Test User", config.CustomFields["author"])
 	assert.Equal(t, "default.md", config.DocumentTypes["markdown"].TemplateFile)
 	assert.Equal(t, "{{.Title}}.md", config.DocumentTypes["markdown"].FileNamePattern)
 	assert.Equal(t, "{{.Year}}/{{.Month}}", config.DocumentTypes["markdown"].DirectoryPattern)
@@ -42,7 +42,7 @@ func TestLoadConfigurationsJsonConfig(t *testing.T) {
 	tempDir := t.TempDir()
 	jsonContent := `{
         "default_document_type": "text",
-        "custom_values": {
+        "custom_fields": {
             "author": "Another User"
         },
         "document_types": {
@@ -65,7 +65,7 @@ func TestLoadConfigurationsJsonConfig(t *testing.T) {
 	config, err := LoadConfigurations(options)
 	assert.NoError(t, err)
 	assert.Equal(t, "text", config.DefaultDocumentType)
-	assert.Equal(t, "Another User", config.CustomValues["author"])
+	assert.Equal(t, "Another User", config.CustomFields["author"])
 	assert.Equal(t, "default.txt", config.DocumentTypes["text"].TemplateFile)
 	assert.Equal(t, "{{.Title}}.txt", config.DocumentTypes["text"].FileNamePattern)
 	assert.Equal(t, "{{.Year}}/{{.Month}}", config.DocumentTypes["text"].DirectoryPattern)
@@ -77,7 +77,7 @@ func TestLoadConfigurationsMultipleLayers(t *testing.T) {
 
 	userConfigContent := `
 default_document_type: journal
-custom_values:
+custom_fields:
   author: "John Doe"
 `
 
@@ -103,7 +103,7 @@ document_types:
 	config, err := LoadConfigurations(options)
 	assert.NoError(t, err)
 	assert.Equal(t, "journal", config.DefaultDocumentType)
-	assert.Equal(t, "John Doe", config.CustomValues["author"])
+	assert.Equal(t, "John Doe", config.CustomFields["author"])
 	assert.Equal(t, "workspace.md", config.DocumentTypes["journal"].TemplateFile)
 }
 
@@ -113,14 +113,14 @@ func TestLoadConfigurationsMergeDocuments(t *testing.T) {
 
 	userConfigContent := `
 default_document_type: journal
-custom_values:
+custom_fields:
   author: "John Doe"
 document_types:
   journal:
     template_file: "user.md"
     directory_pattern: "{{.Year}}/{{.Month}}"
     file_name_pattern: "{{.Title}}.md"
-    custom_values:
+    custom_fields:
       mood: "sad"
 `
 
@@ -130,7 +130,7 @@ document_types:
     template_file: "workspace.md"
     file_name_pattern: "workspace-{{.Title}}.md"
     directory_pattern: "{{.Year}}/workspaceoverride"
-    custom_values:
+    custom_fields:
       mood: "happy"
   planning:
     template_file: "planning.md"
@@ -153,14 +153,14 @@ document_types:
 	config, err := LoadConfigurations(options)
 	assert.NoError(t, err)
 	assert.Equal(t, "journal", config.DefaultDocumentType)
-	assert.Equal(t, "John Doe", config.CustomValues["author"])
+	assert.Equal(t, "John Doe", config.CustomFields["author"])
 
 	journalDocType := config.DocumentTypes["journal"]
 	assert.NotNil(t, journalDocType)
 	assert.Equal(t, "workspace.md", journalDocType.TemplateFile)
 	assert.Equal(t, "{{.Year}}/workspaceoverride", journalDocType.DirectoryPattern)
 	assert.Equal(t, "workspace-{{.Title}}.md", journalDocType.FileNamePattern)
-	assert.Equal(t, "happy", journalDocType.CustomValues["mood"])
+	assert.Equal(t, "happy", journalDocType.CustomFields["mood"])
 
 	planningDocType := config.DocumentTypes["planning"]
 	assert.NotNil(t, planningDocType)

@@ -44,7 +44,7 @@ func createMockDocumentType() config.DocumentType {
 		FileNamePattern:  "notes/{{ .Today | date \"2006-01-02\" }}-{{ .DocName }}.md",
 		DirectoryPattern: "docs/{{ .Today | date \"2006\" }}/{{ .Today | date \"January\" }}",
 		TemplateFile:     "test_template.md",
-		CustomValues:     map[string]interface{}{"CustomField": "Example Custom Value"},
+		CustomFields:     map[string]interface{}{"CustomField": "Example Custom Field"},
 	}
 }
 
@@ -52,7 +52,7 @@ func createCreateCommand(appCtx *AppContext, docType config.DocumentType) *Creat
 	return &CreateCommand{
 		DocName:      "TestDocument",
 		DocType:      docType,
-		CustomFields: map[string]interface{}{"AnotherField": "Additional Value"},
+		CustomFields: map[string]interface{}{"AnotherField": "Additional Field"},
 		Topic:        "Test Topic",
 		AppCtx:       appCtx,
 	}
@@ -90,8 +90,8 @@ func TestCreateCommand_Execute(t *testing.T) {
 	expectedContent := fmt.Sprintf(`Document Title: TestDocument
 Date: %s
 Topic: Test Topic
-CustomField: Example Custom Value
-AnotherField: Additional Value`, mockStartTime.Format("02-01-2006"))
+CustomField: Example Custom Field
+AnotherField: Additional Field`, mockStartTime.Format("02-01-2006"))
 
 	verifyGeneratedDocument(t, expectedDirPath, expectedFilePath, expectedContent)
 }

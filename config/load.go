@@ -101,11 +101,11 @@ func deepMergeConfig(dst, src *Config) {
 		dst.DefaultDocumentType = src.DefaultDocumentType
 	}
 
-	if dst.CustomValues == nil {
-		dst.CustomValues = map[string]interface{}{}
+	if dst.CustomFields == nil {
+		dst.CustomFields = map[string]interface{}{}
 	}
-	for k, v := range src.CustomValues {
-		dst.CustomValues[k] = v
+	for k, v := range src.CustomFields {
+		dst.CustomFields[k] = v
 	}
 
 	if dst.DocumentTypes == nil {
@@ -122,11 +122,11 @@ func deepMergeConfig(dst, src *Config) {
 			if v.DirectoryPattern != "" {
 				existing.DirectoryPattern = v.DirectoryPattern
 			}
-			if existing.CustomValues == nil {
-				existing.CustomValues = map[string]interface{}{}
+			if existing.CustomFields == nil {
+				existing.CustomFields = map[string]interface{}{}
 			}
-			for key, value := range v.CustomValues {
-				existing.CustomValues[key] = value
+			for k, v := range v.CustomFields {
+				existing.CustomFields[k] = v
 			}
 			dst.DocumentTypes[k] = existing
 		} else {

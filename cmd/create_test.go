@@ -26,13 +26,21 @@ func TestCreateCommandWithMockWorkingDir(t *testing.T) {
 	data := `default_document_type: journal
 document_types:
   journal:
-    template_file: "workspace.md"
+    template_file: "journal.md"
     file_name_pattern: "{{.Year}}-{{.Month}}-{{.Day}}.md"
     directory_pattern: "{{.Year}}/{{.Month}}"
 `
 
 	// write a config file to the .dodl directory
 	err = os.WriteFile(filepath.Join(testDir, ".dodl", "config.yaml"), []byte(data), 0644)
+	assert.NoError(t, err)
+
+	// create a templates directory in the .dodl directory
+	err = os.Mkdir(filepath.Join(testDir, ".dodl", "templates"), 0755)
+	assert.NoError(t, err)
+
+	// write a template file to the templates directory
+	err = os.WriteFile(filepath.Join(testDir, ".dodl", "templates", "journal.md"), []byte("This is a journal template"), 0644)
 	assert.NoError(t, err)
 
 	createCmd := NewCreateCmd(fakeWdProv)

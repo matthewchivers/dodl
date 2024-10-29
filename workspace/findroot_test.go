@@ -25,7 +25,7 @@ func TestFindWorkspaceRootWithDirs(t *testing.T) {
 	tests := []struct {
 		name        string
 		dirs        []string
-		entryPoint  string
+		workingDirectory  string
 		expectRoot  string
 		expectError bool
 	}{
@@ -34,7 +34,7 @@ func TestFindWorkspaceRootWithDirs(t *testing.T) {
 			dirs: []string{
 				"workspace/.dodl/nested/child",
 			},
-			entryPoint:  "workspace/.dodl/nested/child",
+			workingDirectory:  "workspace/.dodl/nested/child",
 			expectRoot:  "workspace",
 			expectError: false,
 		},
@@ -43,7 +43,7 @@ func TestFindWorkspaceRootWithDirs(t *testing.T) {
 			dirs: []string{
 				"dir1/dir2",
 			},
-			entryPoint:  "dir1/dir2",
+			workingDirectory:  "dir1/dir2",
 			expectRoot:  "",
 			expectError: true,
 		},
@@ -52,14 +52,14 @@ func TestFindWorkspaceRootWithDirs(t *testing.T) {
 			dirs: []string{
 				"workspace/.dodl",
 			},
-			entryPoint:  "workspace",
+			workingDirectory:  "workspace",
 			expectRoot:  "workspace",
 			expectError: false,
 		},
 		{
-			name:        "handles empty entry point",
+			name:        "handles empty working directory",
 			dirs:        nil,
-			entryPoint:  "",
+			workingDirectory:  "",
 			expectRoot:  "",
 			expectError: true,
 		},
@@ -69,13 +69,13 @@ func TestFindWorkspaceRootWithDirs(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			// Setup the test environment
 			tempDir := createTempDirWithStructure(t, tt.dirs)
-			entryPoint := tt.entryPoint
-			if entryPoint != "" {
-				entryPoint = filepath.Join(tempDir, tt.entryPoint)
+			workingDirectory := tt.workingDirectory
+			if workingDirectory != "" {
+				workingDirectory = filepath.Join(tempDir, tt.workingDirectory)
 			}
 
 			// Run the function under test
-			root, err := FindWorkspaceRoot(entryPoint)
+			root, err := FindWorkspaceRoot(workingDirectory)
 
 			if tt.expectError {
 				assert.Error(t, err)

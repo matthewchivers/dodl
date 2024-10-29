@@ -5,9 +5,9 @@ import (
 	"path/filepath"
 )
 
-func LoadTemplate(entryPoint, templateFile string) ([]byte, error) {
+func LoadTemplate(workingDirectory, templateFile string) ([]byte, error) {
 	// Get workspace root / dodl directory
-	workspaceRoot, err := FindWorkspaceRoot(entryPoint)
+	workspaceRoot, err := FindWorkspaceRoot(workingDirectory)
 	if err != nil {
 		return nil, err
 	}

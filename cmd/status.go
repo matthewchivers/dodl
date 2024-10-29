@@ -2,8 +2,9 @@ package cmd
 
 import (
 	"github.com/matthewchivers/dodl/cmd/wd"
+	"github.com/matthewchivers/dodl/config"
 	"github.com/matthewchivers/dodl/core"
-	"github.com/matthewchivers/dodl/models"
+	"github.com/matthewchivers/dodl/workspace"
 	"github.com/spf13/cobra"
 )
 
@@ -26,10 +27,30 @@ func runStatusE(wdProv wd.WorkingDirProvider) error {
 		return err
 	}
 
-	cmdCtx := &models.CommandContext{
-		Command:    "status",
-		EntryPoint: workingDir,
+	workspaceRoot, err := workspace.FindWorkspaceRoot(workingDir)
+	if err != nil {
+		return err
 	}
 
-	return core.ExecuteCommand(cmdCtx)
+	// load app context
+	appCtx := &core.AppContext{
+		WorkingDir:    workingDir,
+		StartTime:     startTime,
+		WorkspaceRoot: workspaceRoot,
+	}
+
+	cfgOpts := config.ConfigOptions{
+		WorkspaceDodlDir: workspaceRoot,
+	}
+	cfg, err := config.LoadConfigurations(cfgOpts)
+	if err != nil {
+		return err
+	}
+
+	statusCmd := core.StatusCommand{
+		AppCtx: appCtx,
+		Config: cfg,
+	}
+
+	return statusCmd.Execute()
 }

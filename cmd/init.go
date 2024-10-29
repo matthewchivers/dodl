@@ -5,7 +5,7 @@ import (
 
 	"github.com/matthewchivers/dodl/cmd/wd"
 	"github.com/matthewchivers/dodl/core"
-	"github.com/matthewchivers/dodl/models"
+	"github.com/matthewchivers/dodl/workspace"
 	"github.com/spf13/cobra"
 )
 
@@ -33,16 +33,23 @@ func runInitE(args []string, wdProv wd.WorkingDirProvider) error {
 		return err
 	}
 
-	cmdCtx := &models.CommandContext{
-		Command: "init",
-		Args:    args,
-		Flags: map[string]interface{}{
-			"targetDirectory": targetDir,
-		},
-		EntryPoint: workingDir,
+	workspaceRoot, err := workspace.FindWorkspaceRoot(workingDir)
+	if err != nil && err != workspace.ErrNotInWorkspace {
+		return err
 	}
 
-	return core.ExecuteCommand(cmdCtx)
+	appCtx := &core.AppContext{
+		WorkingDir:    workingDir,
+		StartTime:     startTime,
+		WorkspaceRoot: workspaceRoot,
+	}
+
+	initCmd := core.InitialiseCommand{
+		AppCtx:          appCtx,
+		TargetDirectory: targetDir,
+	}
+
+	return initCmd.Execute()
 }
 
 func getTargetDir(wd string, args []string) (string, error) {

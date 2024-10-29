@@ -3,12 +3,13 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"time"
 
+	"github.com/matthewchivers/dodl/cmd/create"
+	"github.com/matthewchivers/dodl/cmd/initialise"
+	"github.com/matthewchivers/dodl/cmd/status"
+	"github.com/matthewchivers/dodl/cmd/wd"
 	"github.com/spf13/cobra"
 )
-
-var startTime = time.Now()
 
 var rootCmd = &cobra.Command{
 	Use:   "dodl",
@@ -20,8 +21,11 @@ var rootCmd = &cobra.Command{
 }
 
 func init() {
+	createCmd := create.NewCreateCmd(&wd.DefaultWorkingDirProvider{})
 	rootCmd.AddCommand(createCmd)
+	initCmd := initialise.NewInitCmd(&wd.DefaultWorkingDirProvider{})
 	rootCmd.AddCommand(initCmd)
+	statusCmd := status.NewStatusCmd(&wd.DefaultWorkingDirProvider{})
 	rootCmd.AddCommand(statusCmd)
 }
 

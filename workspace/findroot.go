@@ -52,3 +52,7 @@ func FindWorkspaceRoot(entryPoint string) (string, error) {
 		currentPath = parentPath
 	}
 }
+
+func GetDodlDirPath(workspaceRoot string) string {
+	return filepath.Join(workspaceRoot, ".dodl")
+}

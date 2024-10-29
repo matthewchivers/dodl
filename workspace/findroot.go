@@ -23,16 +23,16 @@ func checkForDodlDir(path string) (bool, error) {
 	return info.IsDir(), nil // .dodl exists
 }
 
-// FindWorkspaceRoot identifies the root of the workspace that contains the given entry point.
+// FindWorkspaceRoot identifies the root of the workspace that contains the given working directory.
 // It returns the root path if in a workspace, ErrNotInWorkspace if not in a workspace, or an error.
-func FindWorkspaceRoot(entryPoint string) (string, error) {
-	if entryPoint == "" {
-		return "", fmt.Errorf("supplied entry point is empty")
+func FindWorkspaceRoot(workingDirectory string) (string, error) {
+	if workingDirectory == "" {
+		return "", fmt.Errorf("supplied working directory is empty")
 	}
 
-	currentPath, err := filepath.Abs(entryPoint)
+	currentPath, err := filepath.Abs(workingDirectory)
 	if err != nil {
-		return "", err // Return the error if entryPoint cannot be resolved
+		return "", err // Return the error if workingDirectory cannot be resolved
 	}
 
 	for {

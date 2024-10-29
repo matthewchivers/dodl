@@ -3,9 +3,12 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/spf13/cobra"
 )
+
+var startTime = time.Now()
 
 var rootCmd = &cobra.Command{
 	Use:   "dodl",

@@ -24,8 +24,8 @@ func (c *StatusCommand) Execute() error {
 		fmt.Printf("    Filename Pattern: %s\n", dt.FileNamePattern)
 		fmt.Printf("    Directory Pattern: %s\n", dt.DirectoryPattern)
 		fmt.Printf("    Template Path: %s\n", dt.TemplateFile)
-		for k, v := range dt.CustomValues {
-			fmt.Printf("      Custom Value: %s: %s\n", k, v)
+		for k, v := range dt.CustomFields {
+			fmt.Printf("      Custom Field: %s: %s\n", k, v)
 		}
 	}
 	return nil

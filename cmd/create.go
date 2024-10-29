@@ -83,10 +83,11 @@ func runCreateE(args []string, wdProv wd.WorkingDirProvider) error {
 	}
 
 	createCmd := &core.CreateCommand{
-		DocName: docTypeName,
-		DocType: docType,
-		Topic:   topic,
-		AppCtx:  appCtx,
+		DocName:      docTypeName,
+		DocType:      docType,
+		CustomFields: cfg.CustomValues,
+		Topic:        topic,
+		AppCtx:       appCtx,
 	}
 
 	return createCmd.Execute()

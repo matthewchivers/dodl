@@ -3,6 +3,7 @@ package filesystem
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 )
 
 // MkDir creates a directory at the specified path if it does not already exist.
@@ -38,8 +39,12 @@ func EnsureDirExists(path string) error {
 
 // EnsureFileExists creates a file at the specified path if it does not already exist.
 func EnsureFileExists(path string, data []byte) error {
+	// ensure the directory exists
+	dir := filepath.Dir(path)
+	if err := EnsureDirExists(dir); err != nil {
+		return err
+	}
 	if _, err := os.Stat(path); os.IsNotExist(err) {
-		// Create the file if it doesn't exist
 		return WriteFile(path, data)
 	}
 	return nil

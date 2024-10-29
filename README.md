@@ -1,28 +1,33 @@
 # dodl
 
-`dodl` is an upcoming command-line tool designed to solve a familiar problem: you're in a meeting, a lecture, or someone mentions a new idea, and you suddenly need to take notes. You need a structured document, stored in the right place, **right now**.
+`dodl` is a command-line tool designed to streamline the creation of structured documents quickly and efficiently. Whether you're in a meeting, attending a lecture, or brainstorming new ideas, `dodl` helps you generate well-organized documents with the correct templates, stored in the appropriate folders, and pre-filled with key information—all in an instant.
 
-Our vision is to make this effortless: instantly generate a well-organized document, with the correct template, stored in the appropriate folder, with key information pre-filled. No manual setup—just a ready-to-use document, so you can focus on content, not formatting or navigating folder structures.
+## Features
 
-## What dodl Will Do
+- **Dynamic Templating**: Build documents using placeholders like `{{ .Today }}`, `{{ .Topic }}`, and more, creating structured notes in seconds.
+- **Dynamic Directory Structuring**: Automatically organize documents into the right folders based on context, ensuring everything is always where it belongs.
+- **Flexible Date Input**: Need a document templated for a specific date? Specify dates in standard formats like `DD/MM/YYYY`. *Natural language date parsing (e.g., "next Monday", "three weeks from now") is coming soon!*
+- **Seamless Experience**: Focus on simplicity—no unnecessary prompts or inputs. You get exactly what you need, fast.
+- **Customizable Workflows**: Configure templates and file structures to suit personal and project-specific needs.
 
-- **Dynamic Templating**: Build documents using placeholders like `{{date}}`, `{{topic}}`, and more, creating structured notes in seconds.
-- **Dynamic Directory Structuring**: Automatically organize documents into the right folders based on context, so everything is always where it belongs.
-- **Flexible Date Input**: Need a document templated for a meeting in the future? Specify dates in regular formats (`DD-MM-YY`) or natural language expressions like "next Monday" or "three weeks from now."
-- **Seamless Experience**: Focus on simplicity — no unnecessary prompts or input. You get exactly what you need, fast.
-- **Flexible Workflows**: Configure templates and file structures to suit personal and project-specific needs.
+## Getting Started
 
-## Examples
+### Installation
+
+1. Clone the repo
+1. Run "Make install"
+
+> Prerequisites: `golang` and `make`
 
 ### Set Up Your Workspace
 
-To get started, run `dodl init`, which creates a `.dodl` directory in your current location:
+Initialize your workspace by running `dodl init` in your desired directory. This command creates a `.dodl` directory, marking it as the root of your workspace:
 
 ```bash
 dodl init
 ```
 
-Want it somewhere else? Just specify the path:
+If you prefer to initialize a workspace in a different location, specify the path:
 
 ```bash
 dodl init /path/to/your/workspace
@@ -30,13 +35,13 @@ dodl init /path/to/your/workspace
 
 ### Create a Document
 
-Need meeting notes or a project report? Just tell dodl what type of document you want by running:
+Need meeting notes, a project report, or any other type of document? Use the `create` command with the document type you've configured:
 
 ```bash
 dodl create [document_type]
 ```
 
-This should be a document type configured in your workspace's `config.yaml`. For example, if you have a configured document type `projectX`, you can create it with:
+For example, if you have a document type called `projectX` defined in your `config.yaml`, you can create it with:
 
 ```bash
 dodl create projectX
@@ -45,34 +50,77 @@ dodl create projectX
 You can also add details like date and topic to customize it further:
 
 ```bash
-dodl create projectX -d "2023-10-28" -t "Weekly Update"
+dodl create projectX -d "29/10/2024" -t "Weekly Update"
 ```
 
 ### Check Workspace Status
 
-Curious about your workspace setup? Run `dodl status` to see the active configuration, templates, and workspace root path:
+To view your workspace setup, run:
 
 ```bash
 dodl status
 ```
 
+This command displays the active configuration, available templates, and workspace root path.
+
 ## The `dodl` Workspace
 
-Running `dodl init` creates a `.dodl` directory in your chosen location, marking that location (the directory containing `.dodl`) as the root of your workspace. This `.dodl` folder includes:
+When you run `dodl init`, a `.dodl` directory is created in your specified location. This directory serves as the root of your workspace and includes:
 
-- `config.yaml`: Defines document types and behavior.
-- `templates` directory: Holds document templates.
+- `config.yaml`: Defines document types, templates, and behavior.
+- `templates` directory: Holds your document templates.
 
-The workspace root controls all subfolders: any `dodl` commands run within the workspace (`create`, `status`, etc.) will use the config and templates from the `.dodl` directory at the root, ensuring consistent document creation and user information.
+All `dodl` commands (`create`, `status`, etc.) executed within this workspace will use the configurations and templates from this root, ensuring consistent document creation and organization.
+
+## Configuration and Templates
+
+Customize `dodl` to fit your workflow by editing the `config.yaml` file and adding templates in the `templates` directory.
+
+### `config.yaml` Example
+
+```yaml
+default_document_type: journal
+document_types:
+  journal:
+    template_file: "journal.md"
+    file_name_pattern: "{{ .Today | date \"2006-01-02\" }}.md"
+    directory_pattern: "{{ .Today | date \"2006\" }/{{ .Today | date \"January\" }}"
+    custom_values:
+      author: "Your Name"
+```
+
+### Template Files
+
+Templates use Go's `text/template` syntax, allowing you to include dynamic content based on the context. Place your template files in the `templates` directory.
+
+Example `journal.md` template:
+
+```
+# Journal Entry - {{ .Today | date "02 January 2006" }}
+
+**Author**: {{ .author }}
+
+## Thoughts
+
+...
+```
 
 ## The Problem `dodl` Solves
 
-In impromptu meetings or when jotting down ideas, dodl removes the friction from note-taking. It provides the document template you need, pre-filled with relevant data and stored in the right folder, so you can start typing immediately without worrying about setup. The goal is to streamline workflows, letting you focus on capturing ideas, not managing files.
+In spontaneous situations where you need to take notes or document ideas, setting up a structured document can be a hassle. `dodl` eliminates this friction by providing you with a ready-to-use document tailored to your needs, so you can focus on capturing information without worrying about formatting or file organization.
 
 ## Status
 
-`dodl` is currently in active development. The basic command system is in place using Cobra commands, and users can now use the `init` command to create a new dodl workspace. A configuration system has been implemented, paving the way for specifying documents that the program can create. Follow along as this vision is brought to life!
+`dodl` is currently in active development. The core features—including dynamic templating, configuration, and document creation—have been implemented. Natural language date parsing is planned for a future release. For now, you can specify custom dates (at runtime) using standard formats like `DD/MM/YYYY`. We welcome feedback and contributions to continue improving the tool.
+
+## Contributing
+
+Contributions are welcome! If you'd like to contribute, please fork the repository and submit a pull request. For major changes, please open an issue first to discuss what you'd like to change.
 
 ## License
 
-`dodl` will be released under the MIT License, ensuring it's free to use, modify, and share (with attribution).
+`dodl` is released under the MIT License, ensuring it's free to use, modify, and share (with attribution).
+
+---
+
+Feel free to explore and customize `dodl` to suit your workflow. If you have any questions or suggestions, please open an issue on the [GitHub repository](https://github.com/matthewchivers/dodl).

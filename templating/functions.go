@@ -10,7 +10,7 @@ func addCustomFuncs(funcMap template.FuncMap) template.FuncMap {
 	funcMap["addDays"] = addDays
 	funcMap["addMonths"] = addMonths
 	funcMap["addYears"] = addYears
-	funcMap["weekCommencing"] = weekCommencing
+	funcMap["WeekStart"] = WeekStart
 	funcMap["daysInYear"] = daysInYear
 	funcMap["daysInMonth"] = daysInMonth
 	return funcMap
@@ -31,8 +31,8 @@ func addYears(t time.Time, years int) time.Time {
 	return t.AddDate(years, 0, 0)
 }
 
-// weekCommencing returns the date of the Monday of the week containing the given date.
-func weekCommencing(t time.Time) time.Time {
+// WeekStart returns the date of the Monday of the week containing the given date.
+func WeekStart(t time.Time) time.Time {
 	offset := (int(t.Weekday()) + 6) % 7 // Adjust so that Monday is 0
 	return t.AddDate(0, 0, -offset)
 }

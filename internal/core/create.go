@@ -10,6 +10,7 @@ import (
 	"github.com/matthewchivers/dodl/pkg/workspace"
 )
 
+// CreateCommand holds all the data/context required to create a new document
 type CreateCommand struct {
 	DocName      string
 	DocType      config.DocumentType
@@ -19,6 +20,7 @@ type CreateCommand struct {
 	Workspace    *workspace.Workspace
 }
 
+// Execute creates a new document based on the data/context in the CreateCommand
 func (c *CreateCommand) Execute() error {
 	data := map[string]interface{}{
 		"Today": c.AppCtx.StartTime,

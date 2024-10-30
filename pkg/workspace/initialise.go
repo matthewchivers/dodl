@@ -6,6 +6,9 @@ import (
 	"github.com/matthewchivers/dodl/pkg/filesystem"
 )
 
+// Initialise ensures a dodl workspace exists in the target directory.
+// The workspace will contain a .dodl directory with a config.yaml file and a templates directory.
+// It does this idempotently, so it will not overwrite any existing files or directories.
 func Initialise(targetDir string) error {
 	dodlDir := filepath.Join(targetDir, ".dodl")
 

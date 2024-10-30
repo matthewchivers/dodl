@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+// TestAddDays tests the addDays function.
 func TestAddDays(t *testing.T) {
 	testCases := []struct {
 		name     string
@@ -48,6 +49,7 @@ func TestAddDays(t *testing.T) {
 	}
 }
 
+// TestAddMonths tests the addMonths function.
 func TestAddMonths(t *testing.T) {
 	testCases := []struct {
 		name     string
@@ -91,6 +93,7 @@ func TestAddMonths(t *testing.T) {
 	}
 }
 
+// TestAddYears tests the addYears function.
 func TestAddYears(t *testing.T) {
 	testCases := []struct {
 		name     string
@@ -134,6 +137,7 @@ func TestAddYears(t *testing.T) {
 	}
 }
 
+// TestWeekStart tests the WeekStart function.
 func TestWeekStart(t *testing.T) {
 	testCases := []struct {
 		name     string
@@ -172,6 +176,7 @@ func TestWeekStart(t *testing.T) {
 	}
 }
 
+// TestDaysInYear tests the daysInYear function.
 func TestDaysInYear(t *testing.T) {
 	testCases := []struct {
 		name     string
@@ -210,6 +215,7 @@ func TestDaysInYear(t *testing.T) {
 	}
 }
 
+// TestDaysInMonth tests the daysInMonth function.
 func TestDaysInMonth(t *testing.T) {
 	testCases := []struct {
 		name     string

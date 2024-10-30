@@ -10,7 +10,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// NewStatusCmd creates the 'status' command for checking the workspace status.
+// NewStatusCmd returns the configured cobra.Command for the status command.
 func NewStatusCmd(wdProv wd.WorkingDirProvider) *cobra.Command {
 	return &cobra.Command{
 		Use:   "status",
@@ -43,7 +43,8 @@ func runStatusE(wdProv wd.WorkingDirProvider) error {
 	return executeStatus(appCtx, cfg, wsp)
 }
 
-// createAppContext initializes the core.AppContext with the provided working directory and workspace root.
+// createAppContext initialises the core.AppContext with the provided working directory and workspace root.
+// Returns a new AppContext with the working directory and start time set.
 func createAppContext(workingDir string) *core.AppContext {
 	startTime := time.Now()
 	return &core.AppContext{
@@ -53,6 +54,7 @@ func createAppContext(workingDir string) *core.AppContext {
 }
 
 // loadConfig loads the dodl configuration from the specified workspace root.
+// Returns the loaded configuration, or an error if the configuration cannot be loaded.
 func loadConfig(workspaceRoot string) (*config.Config, error) {
 	cfgOpts := config.ConfigOptions{
 		WorkspaceDodlDir: workspaceRoot,
@@ -61,6 +63,7 @@ func loadConfig(workspaceRoot string) (*config.Config, error) {
 }
 
 // executeStatus runs the StatusCommand to display the workspace status.
+// Returns an error if the status command fails to execute.
 func executeStatus(appCtx *core.AppContext, cfg *config.Config, wsp *workspace.Workspace) error {
 	statusCmd := core.StatusCommand{
 		AppCtx:    appCtx,

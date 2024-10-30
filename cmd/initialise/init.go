@@ -43,6 +43,7 @@ func runInitE(args []string, wdProv wd.WorkingDirProvider) error {
 }
 
 // resolveTargetDir determines the target directory for the workspace, defaulting to the working directory if not provided.
+// Returns the resolved target directory, or an error if the target directory cannot be determined.
 func resolveTargetDir(workingDir string, args []string) (string, error) {
 	targetDir := workingDir
 	if len(args) > 0 {
@@ -53,6 +54,7 @@ func resolveTargetDir(workingDir string, args []string) (string, error) {
 }
 
 // createAppContext initializes the core.AppContext with the provided working directory and workspace root.
+// Returns a new AppContext with the working directory and start time set.
 func createAppContext(workingDir string) *core.AppContext {
 	startTime := time.Now()
 	return &core.AppContext{

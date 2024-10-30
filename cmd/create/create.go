@@ -64,7 +64,6 @@ func runCreateE(args []string, wdProv wd.WorkingDirProvider) error {
 		return fmt.Errorf("document type %s not found in configuration", docTypeName)
 	}
 
-	// convert dateStr to time.Time
 	startTime := time.Now()
 	if dateStr != "" {
 		startTime, err = time.Parse("02-01-2006", dateStr)
@@ -91,6 +90,7 @@ func runCreateE(args []string, wdProv wd.WorkingDirProvider) error {
 }
 
 // loadConfig loads the configuration file from the workspace root for the given working directory.
+// Returns the loaded configuration or an error if the configuration could not be loaded.
 func loadConfig(dodlPath string) (*config.Config, error) {
 
 	configOptions := config.ConfigOptions{
@@ -106,6 +106,7 @@ func loadConfig(dodlPath string) (*config.Config, error) {
 }
 
 // getDocumentTypeName determines the document type name based on user input or config defaults.
+// Returns the document type name or an error if no document type is specified (by argument or configuration default).
 func getDocumentTypeName(args []string, defaultDocName string) (string, error) {
 	if len(args) > 0 {
 		return args[0], nil

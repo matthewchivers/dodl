@@ -5,16 +5,15 @@ import (
 	"path/filepath"
 )
 
+// LoadTemplate reads a template file from the workspace.
+// Returns the template data as a byte slice.
 func (w *Workspace) LoadTemplate(templateFile string) ([]byte, error) {
-	// Get workspace root / dodl directory
 	workspaceRoot := w.RootPath()
 
-	// Define the .dodl directory and template subdirectory
 	dodlDir := ".dodl"
 	templateDir := "templates"
 	templatePath := filepath.Join(workspaceRoot, dodlDir, templateDir, templateFile)
 
-	// Load the template file from the constructed path
 	templateData, err := os.ReadFile(templatePath)
 	if err != nil {
 		return nil, err

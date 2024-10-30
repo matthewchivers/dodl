@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+// prepareTestTimes creates a map with the test time and derived values.
 func prepareTestTimes(testTime time.Time) map[string]interface{} {
 	data := map[string]interface{}{
 		"Now":       testTime,
@@ -14,6 +15,7 @@ func prepareTestTimes(testTime time.Time) map[string]interface{} {
 	return data
 }
 
+// TestRenderTemplate_DirectoryPatterns tests rendering directory patterns.
 func TestRenderTemplate_DirectoryPatterns(t *testing.T) {
 	testCases := []struct {
 		name         string
@@ -55,7 +57,7 @@ func TestRenderTemplate_DirectoryPatterns(t *testing.T) {
 		{
 			name:     "Edge case - Sunday",
 			template: "{{ .Now | date \"2006/01\" }}/wc {{ .WeekStart | date \"2 Jan 2006\" }}",
-			testTime: time.Date(2024, time.January, 7, 0, 0, 0, 0, time.UTC), // Sunday
+			testTime: time.Date(2024, time.January, 7, 0, 0, 0, 0, time.UTC),
 			expected: "2024/01/wc 1 Jan 2024",
 		},
 		{
@@ -83,6 +85,7 @@ func TestRenderTemplate_DirectoryPatterns(t *testing.T) {
 	}
 }
 
+// TestRenderTemplate_FileNamePatterns tests rendering file name patterns.
 func TestRenderTemplate_FileNamePatterns(t *testing.T) {
 	testCases := []struct {
 		name         string
@@ -119,6 +122,7 @@ func TestRenderTemplate_FileNamePatterns(t *testing.T) {
 	}
 }
 
+// TestRenderTemplate_FileContentTemplates tests rendering file content templates.
 func TestRenderTemplate_FileContentTemplates(t *testing.T) {
 	testCases := []struct {
 		name     string

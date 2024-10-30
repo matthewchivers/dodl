@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/matthewchivers/dodl/cmd/wd"
-	"github.com/matthewchivers/dodl/core"
+	"github.com/matthewchivers/dodl/internal/core"
 	"github.com/matthewchivers/dodl/pkg/config"
 	"github.com/matthewchivers/dodl/workspace"
 	"github.com/spf13/cobra"

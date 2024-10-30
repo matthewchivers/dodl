@@ -134,7 +134,7 @@ func TestAddYears(t *testing.T) {
 	}
 }
 
-func TestWeekCommencing(t *testing.T) {
+func TestWeekStart(t *testing.T) {
 	testCases := []struct {
 		name     string
 		date     time.Time
@@ -164,7 +164,7 @@ func TestWeekCommencing(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			result := weekCommencing(tc.date)
+			result := WeekStart(tc.date)
 			if !result.Equal(tc.expected) {
 				t.Errorf("Expected %v, got %v", tc.expected, result)
 			}

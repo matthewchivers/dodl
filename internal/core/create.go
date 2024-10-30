@@ -6,8 +6,8 @@ import (
 
 	"github.com/matthewchivers/dodl/pkg/config"
 	"github.com/matthewchivers/dodl/pkg/filesystem"
+	"github.com/matthewchivers/dodl/pkg/workspace"
 	"github.com/matthewchivers/dodl/templating"
-	"github.com/matthewchivers/dodl/workspace"
 )
 
 type CreateCommand struct {

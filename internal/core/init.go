@@ -3,7 +3,7 @@ package core
 import (
 	"fmt"
 
-	"github.com/matthewchivers/dodl/workspace"
+	"github.com/matthewchivers/dodl/pkg/workspace"
 )
 
 type InitialiseCommand struct {

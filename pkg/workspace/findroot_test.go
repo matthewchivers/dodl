@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestFindWorkspaceRootWithDirs(t *testing.T) {
+func TestNewWorkspace(t *testing.T) {
 	// Helper function to create a temporary directory structure
 	createTempDirWithStructure := func(t *testing.T, dirs []string) string {
 		tempDir := t.TempDir()
@@ -74,21 +74,25 @@ func TestFindWorkspaceRootWithDirs(t *testing.T) {
 				workingDirectory = filepath.Join(tempDir, tt.workingDirectory)
 			}
 
-			// Run the function under test
-			root, err := FindWorkspaceRoot(workingDirectory)
+			// Attempt to create a new Workspace instance
+			wsp, err := NewWorkspace(workingDirectory)
 
 			if tt.expectError {
 				assert.Error(t, err)
-				if err == nil {
-					t.Logf("Expected error, but got workspace root: %q", root)
-				}
+				assert.Nil(t, wsp, "expected nil workspace on error")
 				return
 			}
 
+			// Assert no error occurred
+			assert.NoError(t, err, "unexpected error occurred")
+
+			// Check the root path of the workspace
 			expectedRoot := filepath.Join(tempDir, tt.expectRoot)
-			if root != expectedRoot {
-				t.Errorf("Expected root: %s, got: %s", expectedRoot, root)
-			}
+			assert.Equal(t, expectedRoot, wsp.RootPath(), "root path mismatch")
+
+			// Check the dodl path of the workspace
+			expectedDodlPath := filepath.Join(expectedRoot, ".dodl")
+			assert.Equal(t, expectedDodlPath, wsp.DodlPath(), "dodl path mismatch")
 		})
 	}
 }

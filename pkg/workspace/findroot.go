@@ -9,73 +9,73 @@ import (
 
 var ErrNotInWorkspace = errors.New("not in a workspace")
 
-var (
-	workspaceRoot map[string]string
-)
-
-// isDodlDirPresent checks if the supplied path contains a .dodl directory.
-func isDodlDirPresent(path string) (bool, error) {
-	info, err := os.Stat(filepath.Join(path, ".dodl"))
-	if err != nil {
-		if os.IsNotExist(err) {
-			return false, nil // .dodl does not exist at this path
-		}
-		return false, err // some other error occurred
-	}
-	return info.IsDir(), nil // .dodl exists
+type Workspace struct {
+	rootPath string
+	dodlPath string
 }
 
-// FindWorkspaceRoot searches upwards from the working directory to find the workspace root.
-// It returns the root path if found, or ErrNotInWorkspace if not.
-func FindWorkspaceRoot(workingDirectory string) (string, error) {
-	if workingDirectory == "" {
-		return "", fmt.Errorf("supplied working directory is empty")
-	}
+// NewWorkspace attempts to find the workspace root from a given directory.
+// If found, it returns a Workspace instance; otherwise, it returns an error.
+func NewWorkspace(workingDirectory string) (*Workspace, error) {
+	newWsp := &Workspace{}
 
-	if workspaceRoot != nil {
-		if root, ok := workspaceRoot[workingDirectory]; ok {
-			return root, nil
-		}
-	}
-
-	currentPath, err := filepath.Abs(workingDirectory)
+	err := newWsp.populatePaths(workingDirectory)
 	if err != nil {
-		return "", err // Return the error if workingDirectory cannot be resolved
+		return nil, err
+	}
+
+	return newWsp, nil
+}
+
+// RootPath returns the root directory of the workspace.
+func (w *Workspace) RootPath() string {
+	return w.rootPath
+}
+
+// DodlPath returns the path to the .dodl directory in the workspace.
+func (w *Workspace) DodlPath() string {
+	return w.dodlPath
+}
+
+// findWorkspaceRoot searches upwards from the working directory to find the workspace root.
+func (w *Workspace) populatePaths(workingDirectory string) error {
+	if workingDirectory == "" {
+		return fmt.Errorf("supplied working directory is empty")
+	}
+
+	workingDirAbs, err := filepath.Abs(workingDirectory)
+	if err != nil {
+		return err
 	}
 
 	for {
-		exists, err := isDodlDirPresent(currentPath)
+		dodlDir := filepath.Join(workingDirAbs, ".dodl")
+		exists, err := directoryExists(dodlDir)
 		if err != nil {
-			return "", err
+			return err
 		}
 		if exists {
-			if workspaceRoot == nil {
-				workspaceRoot = make(map[string]string)
-			}
-			workspaceRoot[workingDirectory] = currentPath
-			return currentPath, nil
+			w.rootPath = workingDirAbs
+			w.dodlPath = dodlDir
+			return nil
 		}
 
-		parentPath := filepath.Dir(currentPath)
-		if parentPath == currentPath {
-			// reached the root of the filesystem without finding .dodl
-			return "", ErrNotInWorkspace
+		parentPath := filepath.Dir(workingDirAbs)
+		if parentPath == workingDirAbs {
+			return ErrNotInWorkspace
 		}
-		currentPath = parentPath
+		workingDirAbs = parentPath
 	}
 }
 
-// GetDodlDirectoryPath returns the path to the .dodl directory within the workspace root
-func GetDodlDirectoryPath(workingDirectory string) (string, error) {
-	workspaceRoot, err := FindWorkspaceRoot(workingDirectory)
+// directoryExists checks if a path exists and is a directory.
+func directoryExists(path string) (bool, error) {
+	info, err := os.Stat(path)
 	if err != nil {
-		return "", err
+		if os.IsNotExist(err) {
+			return false, nil
+		}
+		return false, err
 	}
-	// check if the .dodl directory exists
-	if exists, err := isDodlDirPresent(workspaceRoot); err != nil {
-		return "", err
-	} else if !exists {
-		return "", fmt.Errorf("workspace root does not contain a .dodl directory")
-	}
-	return filepath.Join(workspaceRoot, ".dodl"), nil
+	return info.IsDir(), nil
 }

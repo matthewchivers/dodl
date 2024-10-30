@@ -17,15 +17,15 @@ func (c *InitialiseCommand) Execute() error {
 		return err
 	}
 
-	status := "Initialised new"
-	workspaceRoot, err := workspace.FindWorkspaceRoot(c.TargetDirectory)
+	wsp, err := workspace.NewWorkspace(c.TargetDirectory)
 	if err != nil {
 		return err
 	}
-	if workspaceRoot == c.TargetDirectory {
+	status := "Initialised new"
+	if wsp.RootPath() == c.TargetDirectory {
 		status = "Re-initialised"
 	}
-	fmt.Printf("%s dodl workspace at %s\n", status, c.TargetDirectory)
+	fmt.Printf("%s dodl workspace at %s\n", status, wsp.RootPath())
 
 	return nil
 }

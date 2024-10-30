@@ -16,6 +16,7 @@ type CreateCommand struct {
 	CustomFields map[string]interface{}
 	Topic        string
 	AppCtx       *AppContext
+	Workspace    *workspace.Workspace
 }
 
 func (c *CreateCommand) Execute() error {
@@ -44,7 +45,7 @@ func (c *CreateCommand) Execute() error {
 		return err
 	}
 
-	templateData, err := workspace.LoadTemplate(c.AppCtx.WorkingDir, c.DocType.TemplateFile)
+	templateData, err := c.Workspace.LoadTemplate(c.DocType.TemplateFile)
 	if err != nil {
 		return err
 	}
@@ -53,12 +54,7 @@ func (c *CreateCommand) Execute() error {
 		return err
 	}
 
-	workspaceRoot, err := workspace.FindWorkspaceRoot(c.AppCtx.WorkingDir)
-	if err != nil {
-		return err
-	}
-
-	filepath := filepath.Join(workspaceRoot, dirname, filename)
+	filepath := filepath.Join(c.Workspace.RootPath(), dirname, filename)
 
 	err = filesystem.EnsureFileExists(filepath, []byte(content))
 	if err != nil {

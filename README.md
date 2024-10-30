@@ -1,102 +1,88 @@
 # dodl
 
-`dodl` is a command-line tool designed to streamline the creation of structured documents quickly and efficiently. Whether you're in a meeting, attending a lecture, or brainstorming new ideas, `dodl` helps you generate well-organized documents with the correct templates, stored in the appropriate folders, and pre-filled with key information—all in an instant.
+`dodl` is a command-line tool for creating structured documents quickly and effortlessly. With a few simple comamnds, `dodl` generates documents and automatically organises them in appropriate directories, using templates you define.
 
-## Features
+### What Problem Does `dodl` Solve?
 
-- **Dynamic Templating**: Build documents using placeholders like `{{ .Today }}`, `{{ .Topic }}`, and more, creating structured notes in seconds.
-- **Dynamic Directory Structuring**: Automatically organize documents into the right folders based on context, ensuring everything is always where it belongs.
-- **Flexible Date Input**: Need a document templated for a specific date? Specify dates in standard formats like `DD/MM/YYYY`. *Natural language date parsing (e.g., "next Monday", "three weeks from now") is coming soon!*
-- **Seamless Experience**: Focus on simplicity—no unnecessary prompts or inputs. You get exactly what you need, fast.
-- **Customizable Workflows**: Configure templates and file structures to suit personal and project-specific needs.
+Creating structured documents can be time-consuming. Setting up folders, creating filenames, and ensuring consistent formatting takes effort. `dodl` automates these repetitive tasks, so you can focus directly on writing and getting work done.
 
-## Getting Started
+Explore `dodl` today and simplify your workflow. For questions or suggestions, please open an issue on [GitHub](https://github.com/matthewchivers/dodl).
+
+## Get Started
+
+Here's how to get started with `dodl` in just a few steps:
 
 ### Installation
 
-1. Clone the repo
-1. Run "Make install"
+Make sure you've got [golang](https://go.dev/doc/install) installed (preferably `1.23`) and then run:
 
-> Prerequisites: `golang` and `make`
+```
+go install github.com/matthewchivers/dodl@latest
+```
 
-### Set Up Your Workspace
+### Initialise Your Workspace
 
-Initialize your workspace by running `dodl init` in your desired directory. This command creates a `.dodl` directory, marking it as the root of your workspace:
-
-```bash
+Navigate to a directory that is to be your `dodl` workspace and run:
+```
 dodl init
 ```
 
-If you prefer to initialize a workspace in a different location, specify the path:
+This command crates a `.dodl` directory in your current location. This directory holds all configurations and templates that `dodl` uses to operate.
 
-```bash
-dodl init /path/to/your/workspace
+### Create a document
+
+```
+dodl create [document-type]
 ```
 
-### Create a Document
+Replace `[document-type]` with any document type you've defined in `config.yaml` (see [configure your workspace](#configure-your-workspace)). 
 
-Need meeting notes, a project report, or any other type of document? Use the `create` command with the document type you've configured:
+Override fields at runtime for custom values, example:
 
-```bash
-dodl create [document_type]
+```
+dodl create journal -d "20/03/2027" -t "Milestone Birthday Planning"
 ```
 
-For example, if you have a document type called `projectX` defined in your `config.yaml`, you can create it with:
+The document will be saved based on your templates, e.g. `workspace/2027/March/20/journal-20-03-27.md`.
 
-```bash
-dodl create projectX
-```
+## Templating
 
-You can also add details like date and topic to customize it further:
+Use placeholders like `{{ .Now }}` or `{{ .Topic }}` to dynamically generate content in document templates, directory structures, or filenames. Perfect for notes, journals, reports and more. `dodl` templating makes consistent file naming and structuring simple and easy (as well as powerful where needed).
 
-```bash
-dodl create projectX -d "29/10/2024" -t "Weekly Update"
-```
+#### Examples:
+* `{{ .Topic }}` where the Topic field is "Project X" -> `Project X`
+* `{{ .Topic | upper }}` where the Topic field is "Project X" -> `PROJECT X`
+* `{{ .Now | date "2006/01" }}` uses golang date formatting -> `2024/10`
+* `{{ addDays .Now 6 | date "02-01-06 }}` (if today is 28-Oct-24) -> `03-11-24`
 
-### Check Workspace Status
+Templating uses golang's `text/template` alongside http://masterminds.github.io/sprig/ - which provides functionality such as `upper` and `date` seen above.
 
-To view your workspace setup, run:
+## Configure Your Workspace
 
-```bash
-dodl status
-```
+Customise `dodl` by editing `.dodl/config.yaml`, and adding templates to `.dodl/templates`.
 
-This command displays the active configuration, available templates, and workspace root path.
-
-## The `dodl` Workspace
-
-When you run `dodl init`, a `.dodl` directory is created in your specified location. This directory serves as the root of your workspace and includes:
-
-- `config.yaml`: Defines document types, templates, and behavior.
-- `templates` directory: Holds your document templates.
-
-All `dodl` commands (`create`, `status`, etc.) executed within this workspace will use the configurations and templates from this root, ensuring consistent document creation and organization.
-
-## Configuration and Templates
-
-Customize `dodl` to fit your workflow by editing the `config.yaml` file and adding templates in the `templates` directory.
-
-### `config.yaml` Example
-
-```yaml
+### Example `config.yaml`
+``` yaml
 default_document_type: journal
 document_types:
   journal:
     template_file: "journal.md"
-    file_name_pattern: "{{ .Today | date \"2006-01-02\" }}.md"
-    directory_pattern: "{{ .Today | date \"2006\" }/{{ .Today | date \"January\" }}"
-    custom_values:
+    file_name_pattern: "journal {{ .Now | date \"02 Jan '06\" }}.md"
+    directory_pattern: "{{ .Now | date \"2006\" }}/{{ .Now | date \"January\" }}"
+    custom_fields:
       author: "Your Name"
+  meeting:
+    template_file: "meeting.md"
+    file_name_pattern: "{{ .Topic }} {{ .Now | date \"02-01-2006\" }}.md"
+    directory_pattern: "{{ .Now | date \"2006\"}}/{{ .Now | date \"01\"}}"
 ```
 
 ### Template Files
 
-Templates use Go's `text/template` syntax, allowing you to include dynamic content based on the context. Place your template files in the `templates` directory.
+Example template using the custom field `author` (as in example config above).
 
-Example `journal.md` template:
-
-```
-# Journal Entry - {{ .Today | date "02 January 2006" }}
+``` md
+#  Journal Entry - {{ .Now | date "02 January 2006" }}
 
 **Author**: {{ .author }}
 
@@ -105,22 +91,13 @@ Example `journal.md` template:
 ...
 ```
 
-## The Problem `dodl` Solves
-
-In spontaneous situations where you need to take notes or document ideas, setting up a structured document can be a hassle. `dodl` eliminates this friction by providing you with a ready-to-use document tailored to your needs, so you can focus on capturing information without worrying about formatting or file organization.
-
 ## Status
 
-`dodl` is currently in active development. The core features—including dynamic templating, configuration, and document creation—have been implemented. Natural language date parsing is planned for a future release. For now, you can specify custom dates (at runtime) using standard formats like `DD/MM/YYYY`. We welcome feedback and contributions to continue improving the tool.
+`dodl` is in active development, with core features like templating, configuration, and document creation already implemented. Natural language date parsing is coming soo. Contributions and feedback are welcome!
 
 ## Contributing
 
-Contributions are welcome! If you'd like to contribute, please fork the repository and submit a pull request. For major changes, please open an issue first to discuss what you'd like to change.
+I love open-source, and I love contributions! Fork the repository and submite a pull request! For major changes, please open an issue first to discuss your ideas.
 
 ## License
-
-`dodl` is released under the MIT License, ensuring it's free to use, modify, and share (with attribution).
-
----
-
-Feel free to explore and customize `dodl` to suit your workflow. If you have any questions or suggestions, please open an issue on the [GitHub repository](https://github.com/matthewchivers/dodl).
+`dodl` is released under the MIT license, making it free to use, modify, and share. All I require is attribution (to Matthew Chivers).

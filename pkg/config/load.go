@@ -12,20 +12,30 @@ const (
 	DefaultConfigFileName = "config.yaml"
 )
 
+// ConfigOptions provides options for loading configurations.
 type ConfigOptions struct {
+	// CustomConfigFilePath is the path to a custom configuration file (optional / use for overriding from CLI flags).
 	CustomConfigFilePath string
-	WorkspaceDodlDir     string
-	UserConfigDir        string
+
+	// WorkspaceDodlDir is the path to the workspace .dodl directory.
+	WorkspaceDodlDir string
+
+	// UserDir is the path to the user's home directory
+	UserDir string
 }
 
+// ConfigFileMissingError is an error type for when a config file is missing.
 type ConfigFileMissingError struct {
 	FilePath string
 }
 
+// Error returns the error message for a ConfigFileMissingError.
 func (e *ConfigFileMissingError) Error() string {
 	return fmt.Sprintf("config file %s does not exist", e.FilePath)
 }
 
+// LoadConfiguration loads a configuration from a single file.
+// Returns the loaded configuration or an error if the configuration could not be loaded.
 func LoadConfiguration(filePath string) (*Config, error) {
 	if _, err := os.Stat(filePath); os.IsNotExist(err) {
 		return nil, &ConfigFileMissingError{FilePath: filePath}
@@ -45,6 +55,8 @@ func LoadConfiguration(filePath string) (*Config, error) {
 	return &newConfig, nil
 }
 
+// LoadConfigurations loads configurations from the user and workspace directories (or a custom file).
+// Returns the merged configuration or an error if the configurations could not be loaded.
 func LoadConfigurations(options ConfigOptions) (*Config, error) {
 	if options.CustomConfigFilePath != "" {
 		customConfig, err := LoadConfiguration(options.CustomConfigFilePath)
@@ -56,7 +68,7 @@ func LoadConfigurations(options ConfigOptions) (*Config, error) {
 
 	configsToMerge := []*Config{}
 
-	userConfigDir := options.UserConfigDir
+	userConfigDir := options.UserDir
 	if userConfigDir == "" {
 		confDir, err := getUserConfigDir(userConfigDir)
 		if err != nil {
@@ -96,6 +108,7 @@ func LoadConfigurations(options ConfigOptions) (*Config, error) {
 	return finalConfig, nil
 }
 
+// deepMergeConfig merges the source configuration into the destination configuration.
 func deepMergeConfig(dst, src *Config) {
 	if src.DefaultDocumentType != "" {
 		dst.DefaultDocumentType = src.DefaultDocumentType
@@ -135,6 +148,8 @@ func deepMergeConfig(dst, src *Config) {
 	}
 }
 
+// getUserConfigDir returns the path to the user's configuration directory
+// based on the XDG_CONFIG_HOME environment variable or the user's home directory (or an override).
 func getUserConfigDir(userDirOverride string) (string, error) {
 	if userDirOverride != "" {
 		return filepath.Join(userDirOverride, ".config", "dodl"), nil

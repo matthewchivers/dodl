@@ -14,20 +14,16 @@ func TestCreateCommandWithMockWorkingDir(t *testing.T) {
 	testDir := t.TempDir()
 	fakeWdProv := &wd.FakeWorkingDirProvider{Dir: testDir}
 
-	// Setup the .dodl directory structure and configuration file
 	setupDodlDirectory(t, testDir)
 	setupConfigFile(t, testDir)
 	setupTemplateFile(t, testDir, "journal.md", "This is a journal template")
 
-	// Initialize create command with mock working directory provider
 	createCmd := NewCreateCmd(fakeWdProv)
 	createCmd.SetArgs([]string{}) // No user-specified document type, rely on defaults
 
-	// Configure the command to use the mock config file
 	configFilePath := filepath.Join(testDir, ".dodl", "config.yaml")
 	assert.NoError(t, createCmd.Flags().Set("config", configFilePath))
 
-	// Execute the command and assert no error occurred
 	assert.NoError(t, createCmd.Execute())
 }
 

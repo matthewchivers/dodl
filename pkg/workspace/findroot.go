@@ -9,6 +9,7 @@ import (
 
 var ErrNotInWorkspace = errors.New("not in a workspace")
 
+// Workspace represents a workspace directory structure and provides methods to interact with it.
 type Workspace struct {
 	rootPath string
 	dodlPath string
@@ -38,6 +39,7 @@ func (w *Workspace) DodlPath() string {
 }
 
 // findWorkspaceRoot searches upwards from the working directory to find the workspace root.
+// It returns an ErrNotInWorkspace error if the workspace root is not found.
 func (w *Workspace) populatePaths(workingDirectory string) error {
 	if workingDirectory == "" {
 		return fmt.Errorf("supplied working directory is empty")
@@ -69,6 +71,7 @@ func (w *Workspace) populatePaths(workingDirectory string) error {
 }
 
 // directoryExists checks if a path exists and is a directory.
+// It returns true if the path exists and is a directory; otherwise, it returns false and/or an error.
 func directoryExists(path string) (bool, error) {
 	info, err := os.Stat(path)
 	if err != nil {

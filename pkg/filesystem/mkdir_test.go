@@ -9,6 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// TestMkDir tests the MkDir function.
 func TestMkDir(t *testing.T) {
 	tests := []struct {
 		name          string

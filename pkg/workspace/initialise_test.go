@@ -9,6 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// TestInitialise tests the Initialise function.
 func TestInitialise(t *testing.T) {
 	tests := []struct {
 		name          string

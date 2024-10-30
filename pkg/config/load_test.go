@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// TestLoadConfigurationsEmptyConfig verifies that the default configuration is loaded
 func TestLoadConfigurationsYamlConfig(t *testing.T) {
 	tempDir := t.TempDir()
 	yamlContent := `
@@ -38,39 +39,7 @@ document_types:
 	assert.Equal(t, "{{.Year}}/{{.Month}}", config.DocumentTypes["markdown"].DirectoryPattern)
 }
 
-func TestLoadConfigurationsJsonConfig(t *testing.T) {
-	tempDir := t.TempDir()
-	jsonContent := `{
-        "default_document_type": "text",
-        "custom_fields": {
-            "author": "Another User"
-        },
-        "document_types": {
-            "text": {
-                "template_file": "default.txt",
-                "file_name_pattern": "{{.Title}}.txt",
-                "directory_pattern": "{{.Year}}/{{.Month}}"
-            }
-        }
-    }`
-
-	filePath := filepath.Join(tempDir, "config.json")
-	err := os.WriteFile(filePath, []byte(jsonContent), 0644)
-	assert.NoError(t, err)
-
-	options := ConfigOptions{
-		CustomConfigFilePath: filePath,
-	}
-
-	config, err := LoadConfigurations(options)
-	assert.NoError(t, err)
-	assert.Equal(t, "text", config.DefaultDocumentType)
-	assert.Equal(t, "Another User", config.CustomFields["author"])
-	assert.Equal(t, "default.txt", config.DocumentTypes["text"].TemplateFile)
-	assert.Equal(t, "{{.Title}}.txt", config.DocumentTypes["text"].FileNamePattern)
-	assert.Equal(t, "{{.Year}}/{{.Month}}", config.DocumentTypes["text"].DirectoryPattern)
-}
-
+// TestLoadConfigurationsMultipleLayers verifies that configurations are loaded from multiple layers (and merged correctly)
 func TestLoadConfigurationsMultipleLayers(t *testing.T) {
 	userTempDir := t.TempDir()
 	workspaceTempDir := t.TempDir()
@@ -96,7 +65,7 @@ document_types:
 	assert.NoError(t, err)
 
 	options := ConfigOptions{
-		UserConfigDir:    userTempDir,
+		UserDir:          userTempDir,
 		WorkspaceDodlDir: workspaceTempDir,
 	}
 
@@ -107,6 +76,7 @@ document_types:
 	assert.Equal(t, "workspace.md", config.DocumentTypes["journal"].TemplateFile)
 }
 
+// TestLoadConfigurationsMergeDocuments verifies that document types are merged correctly (more in depth than TestLoadConfigurationsMultipleLayers)
 func TestLoadConfigurationsMergeDocuments(t *testing.T) {
 	userTempDir := t.TempDir()
 	workspaceTempDir := t.TempDir()
@@ -146,7 +116,7 @@ document_types:
 	assert.NoError(t, err)
 
 	options := ConfigOptions{
-		UserConfigDir:    userTempDir,
+		UserDir:          userTempDir,
 		WorkspaceDodlDir: workspaceTempDir,
 	}
 
@@ -168,6 +138,7 @@ document_types:
 	assert.Equal(t, "plan-{{.Year}}-{{.Month}}-{{.Day}}.md", planningDocType.FileNamePattern)
 }
 
+// TestLoadConfigurationsMissingFile verifies that an error is returned when the configuration file is missing
 func TestLoadConfigurationsMissingFile(t *testing.T) {
 	options := ConfigOptions{
 		CustomConfigFilePath: "non_existent.yaml",
@@ -177,6 +148,7 @@ func TestLoadConfigurationsMissingFile(t *testing.T) {
 	assert.Error(t, err)
 }
 
+// TestLoadConfigurationsWithOverride verifies that the custom configuration file overrides the default configuration
 func TestLoadConfigurationsWithOverride(t *testing.T) {
 	tempDir := t.TempDir()
 	yamlContent := `

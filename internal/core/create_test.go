@@ -13,6 +13,7 @@ import (
 	"github.com/matthewchivers/dodl/pkg/workspace"
 )
 
+// setupTestEnvironment creates a test directory structure and writes a template file to it
 func setupTestEnvironment(t *testing.T, testDir string) (templateFilePath string, dodlDir string) {
 	t.Helper()
 
@@ -32,6 +33,7 @@ AnotherField: {{ .AnotherField }}`
 	return templateFilePath, dodlDir
 }
 
+// createMockAppContext creates a mock application context for testing
 func createMockAppContext(testDir string, mockStartTime time.Time) *AppContext {
 	return &AppContext{
 		WorkingDir: testDir,
@@ -39,6 +41,7 @@ func createMockAppContext(testDir string, mockStartTime time.Time) *AppContext {
 	}
 }
 
+// createMockDocumentType creates a mock document type for testing
 func createMockDocumentType() config.DocumentType {
 	return config.DocumentType{
 		FileNamePattern:  "notes/{{ .Today | date \"2006-01-02\" }}-{{ .DocName }}.md",
@@ -48,6 +51,7 @@ func createMockDocumentType() config.DocumentType {
 	}
 }
 
+// createCreateCommand creates a "create" command for testing
 func createCreateCommand(appCtx *AppContext, docType config.DocumentType, wsp *workspace.Workspace) *CreateCommand {
 	return &CreateCommand{
 		DocName:      "TestDocument",
@@ -59,6 +63,7 @@ func createCreateCommand(appCtx *AppContext, docType config.DocumentType, wsp *w
 	}
 }
 
+// verifyGeneratedDocument checks that the expected document was generated
 func verifyGeneratedDocument(t *testing.T, expectedDirPath, expectedFilePath, expectedContent string) {
 	t.Helper()
 
@@ -71,6 +76,7 @@ func verifyGeneratedDocument(t *testing.T, expectedDirPath, expectedFilePath, ex
 	require.Equal(t, expectedContent, string(content), "File content does not match expected content")
 }
 
+// TestCreateCommand_Execute validates that the create command can be executed without errors
 func TestCreateCommand_Execute(t *testing.T) {
 	testDir := t.TempDir()
 	setupTestEnvironment(t, testDir)

@@ -7,12 +7,14 @@ import (
 	"github.com/matthewchivers/dodl/pkg/workspace"
 )
 
+// StatusCommand holds all the data/context required to show the status of the current workspace
 type StatusCommand struct {
 	AppCtx    *AppContext
 	Config    *config.Config
 	Workspace *workspace.Workspace
 }
 
+// Execute shows the status of the current workspace based on the data/context in the StatusCommand
 func (c *StatusCommand) Execute() error {
 	fmt.Printf("In workspace: %s\n", c.Workspace.RootPath())
 	fmt.Printf("Working directory: %s\n", c.AppCtx.WorkingDir)

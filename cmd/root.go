@@ -11,6 +11,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "dodl",
 	Short: "dodl is a document creation tool",
@@ -20,6 +21,7 @@ var rootCmd = &cobra.Command{
 	},
 }
 
+// init registers the subcommands with the root command
 func init() {
 	createCmd := create.NewCreateCmd(&wd.DefaultWorkingDirProvider{})
 	rootCmd.AddCommand(createCmd)
@@ -29,6 +31,7 @@ func init() {
 	rootCmd.AddCommand(statusCmd)
 }
 
+// Execute runs the root command
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)

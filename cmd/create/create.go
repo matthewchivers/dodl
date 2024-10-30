@@ -7,7 +7,7 @@ import (
 	"github.com/matthewchivers/dodl/cmd/wd"
 	"github.com/matthewchivers/dodl/internal/core"
 	"github.com/matthewchivers/dodl/pkg/config"
-	"github.com/matthewchivers/dodl/workspace"
+	"github.com/matthewchivers/dodl/pkg/workspace"
 	"github.com/spf13/cobra"
 )
 

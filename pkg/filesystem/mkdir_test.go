@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/matthewchivers/dodl/filesystem"
+	"github.com/matthewchivers/dodl/pkg/filesystem"
 	"github.com/stretchr/testify/assert"
 )
 

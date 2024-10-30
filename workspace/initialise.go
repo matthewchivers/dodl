@@ -3,7 +3,7 @@ package workspace
 import (
 	"path/filepath"
 
-	"github.com/matthewchivers/dodl/filesystem"
+	"github.com/matthewchivers/dodl/pkg/filesystem"
 )
 
 func Initialise(targetDir string) error {

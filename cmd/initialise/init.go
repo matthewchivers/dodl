@@ -34,12 +34,7 @@ func runInitE(args []string, wdProv wd.WorkingDirProvider) error {
 		return err
 	}
 
-	workspaceRoot, err := locateWorkspaceRoot(workingDir)
-	if err != nil {
-		return err
-	}
-
-	appCtx := createAppContext(workingDir, workspaceRoot)
+	appCtx := createAppContext(workingDir)
 	initCmd := core.InitialiseCommand{
 		AppCtx:          appCtx,
 		TargetDirectory: targetDir,
@@ -68,11 +63,10 @@ func locateWorkspaceRoot(workingDir string) (string, error) {
 }
 
 // createAppContext initializes the core.AppContext with the provided working directory and workspace root.
-func createAppContext(workingDir, workspaceRoot string) *core.AppContext {
+func createAppContext(workingDir string) *core.AppContext {
 	startTime := time.Now()
 	return &core.AppContext{
-		WorkingDir:    workingDir,
-		StartTime:     startTime,
-		WorkspaceRoot: workspaceRoot,
+		WorkingDir: workingDir,
+		StartTime:  startTime,
 	}
 }

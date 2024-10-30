@@ -44,12 +44,7 @@ func runCreateE(args []string, wdProv wd.WorkingDirProvider) error {
 		return fmt.Errorf("failed to get working directory: %w", err)
 	}
 
-	workspaceRoot, err := workspace.FindWorkspaceRoot(workingDir)
-	if err != nil {
-		return fmt.Errorf("failed to find workspace root: %w", err)
-	}
-
-	cfg, err := loadConfig(workspaceRoot)
+	cfg, err := loadConfig(workingDir)
 	if err != nil {
 		return err
 	}
@@ -74,9 +69,8 @@ func runCreateE(args []string, wdProv wd.WorkingDirProvider) error {
 	}
 
 	appCtx := &core.AppContext{
-		WorkingDir:    workingDir,
-		WorkspaceRoot: workspaceRoot,
-		StartTime:     startTime,
+		WorkingDir: workingDir,
+		StartTime:  startTime,
 	}
 
 	createCmd := core.CreateCommand{
@@ -90,11 +84,16 @@ func runCreateE(args []string, wdProv wd.WorkingDirProvider) error {
 	return createCmd.Execute()
 }
 
-// loadConfig loads the configuration file from the specified workspace root.
-func loadConfig(workspaceRoot string) (*config.Config, error) {
+// loadConfig loads the configuration file from the workspace root for the given working directory.
+func loadConfig(workingDirectory string) (*config.Config, error) {
+	workspaceDodlDirectory, err := workspace.GetDodlDirectoryPath(workingDirectory)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get .dodl directory path: %w", err)
+	}
+
 	configOptions := config.ConfigOptions{
 		CustomConfigFilePath: configPath,
-		WorkspaceDodlDir:     workspace.GetDodlDirPath(workspaceRoot),
+		WorkspaceDodlDir:     workspaceDodlDirectory,
 	}
 
 	cfg, err := config.LoadConfigurations(configOptions)

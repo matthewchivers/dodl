@@ -34,7 +34,7 @@ func runStatusE(wdProv wd.WorkingDirProvider) error {
 		return err
 	}
 
-	appCtx := createAppContext(workingDir, workspaceRoot)
+	appCtx := createAppContext(workingDir)
 	cfg, err := loadConfig(workspaceRoot)
 	if err != nil {
 		return err
@@ -44,12 +44,11 @@ func runStatusE(wdProv wd.WorkingDirProvider) error {
 }
 
 // createAppContext initializes the core.AppContext with the provided working directory and workspace root.
-func createAppContext(workingDir, workspaceRoot string) *core.AppContext {
+func createAppContext(workingDir string) *core.AppContext {
 	startTime := time.Now()
 	return &core.AppContext{
-		WorkingDir:    workingDir,
-		StartTime:     startTime,
-		WorkspaceRoot: workspaceRoot,
+		WorkingDir: workingDir,
+		StartTime:  startTime,
 	}
 }
 

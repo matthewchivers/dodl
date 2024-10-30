@@ -18,7 +18,11 @@ func (c *InitialiseCommand) Execute() error {
 	}
 
 	status := "Initialised new"
-	if c.AppCtx.WorkspaceRoot == c.TargetDirectory {
+	workspaceRoot, err := workspace.FindWorkspaceRoot(c.TargetDirectory)
+	if err != nil {
+		return err
+	}
+	if workspaceRoot == c.TargetDirectory {
 		status = "Re-initialised"
 	}
 	fmt.Printf("%s dodl workspace at %s\n", status, c.TargetDirectory)

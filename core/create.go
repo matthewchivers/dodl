@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"github.com/matthewchivers/dodl/config"
 	"github.com/matthewchivers/dodl/filesystem"
+	"github.com/matthewchivers/dodl/pkg/config"
 	"github.com/matthewchivers/dodl/templating"
 	"github.com/matthewchivers/dodl/workspace"
 )

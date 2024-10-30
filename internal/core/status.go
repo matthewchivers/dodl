@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/matthewchivers/dodl/pkg/config"
+	"github.com/matthewchivers/dodl/pkg/workspace"
 )
 
 type StatusCommand struct {
@@ -12,7 +13,11 @@ type StatusCommand struct {
 }
 
 func (c *StatusCommand) Execute() error {
-	fmt.Printf("In workspace: %s\n", c.AppCtx.WorkspaceRoot)
+	workspaceRoot, err := workspace.FindWorkspaceRoot(c.AppCtx.WorkingDir)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("In workspace: %s\n", workspaceRoot)
 	fmt.Printf("Working directory: %s\n", c.AppCtx.WorkingDir)
 	fmt.Printf("Start time: %s\n", c.AppCtx.StartTime)
 	fmt.Printf("Config:\n")

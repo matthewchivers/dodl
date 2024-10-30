@@ -53,7 +53,12 @@ func (c *CreateCommand) Execute() error {
 		return err
 	}
 
-	filepath := filepath.Join(c.AppCtx.WorkspaceRoot, dirname, filename)
+	workspaceRoot, err := workspace.FindWorkspaceRoot(c.AppCtx.WorkingDir)
+	if err != nil {
+		return err
+	}
+
+	filepath := filepath.Join(workspaceRoot, dirname, filename)
 
 	err = filesystem.EnsureFileExists(filepath, []byte(content))
 	if err != nil {

@@ -33,9 +33,8 @@ AnotherField: {{ .AnotherField }}`
 
 func createMockAppContext(testDir string, mockStartTime time.Time) *AppContext {
 	return &AppContext{
-		WorkingDir:    testDir,
-		WorkspaceRoot: testDir,
-		StartTime:     mockStartTime,
+		WorkingDir: testDir,
+		StartTime:  mockStartTime,
 	}
 }
 

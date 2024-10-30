@@ -18,9 +18,6 @@ var (
 	dryRun     bool
 )
 
-// createCmd is the root command for document creation.
-var createCmd = NewCreateCmd(&wd.DefaultWorkingDirProvider{})
-
 // NewCreateCmd initializes the 'create' command and its flags.
 func NewCreateCmd(wdProv wd.WorkingDirProvider) *cobra.Command {
 	cmd := &cobra.Command{

@@ -29,18 +29,18 @@ func runStatusE(wdProv wd.WorkingDirProvider) error {
 		return err
 	}
 
-	workspaceRoot, err := workspace.FindWorkspaceRoot(workingDir)
+	wsp, err := workspace.NewWorkspace(workingDir)
 	if err != nil {
 		return err
 	}
 
 	appCtx := createAppContext(workingDir)
-	cfg, err := loadConfig(workspaceRoot)
+	cfg, err := loadConfig(workingDir)
 	if err != nil {
 		return err
 	}
 
-	return executeStatus(appCtx, cfg)
+	return executeStatus(appCtx, cfg, wsp)
 }
 
 // createAppContext initializes the core.AppContext with the provided working directory and workspace root.
@@ -61,10 +61,11 @@ func loadConfig(workspaceRoot string) (*config.Config, error) {
 }
 
 // executeStatus runs the StatusCommand to display the workspace status.
-func executeStatus(appCtx *core.AppContext, cfg *config.Config) error {
+func executeStatus(appCtx *core.AppContext, cfg *config.Config, wsp *workspace.Workspace) error {
 	statusCmd := core.StatusCommand{
-		AppCtx: appCtx,
-		Config: cfg,
+		AppCtx:    appCtx,
+		Config:    cfg,
+		Workspace: wsp,
 	}
 	return statusCmd.Execute()
 }

@@ -8,16 +8,13 @@ import (
 )
 
 type StatusCommand struct {
-	AppCtx *AppContext
-	Config *config.Config
+	AppCtx    *AppContext
+	Config    *config.Config
+	Workspace *workspace.Workspace
 }
 
 func (c *StatusCommand) Execute() error {
-	workspaceRoot, err := workspace.FindWorkspaceRoot(c.AppCtx.WorkingDir)
-	if err != nil {
-		return err
-	}
-	fmt.Printf("In workspace: %s\n", workspaceRoot)
+	fmt.Printf("In workspace: %s\n", c.Workspace.RootPath())
 	fmt.Printf("Working directory: %s\n", c.AppCtx.WorkingDir)
 	fmt.Printf("Start time: %s\n", c.AppCtx.StartTime)
 	fmt.Printf("Config:\n")

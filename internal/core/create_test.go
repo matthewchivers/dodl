@@ -10,6 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/matthewchivers/dodl/pkg/config"
+	"github.com/matthewchivers/dodl/pkg/workspace"
 )
 
 func setupTestEnvironment(t *testing.T, testDir string) (templateFilePath string, dodlDir string) {
@@ -47,13 +48,14 @@ func createMockDocumentType() config.DocumentType {
 	}
 }
 
-func createCreateCommand(appCtx *AppContext, docType config.DocumentType) *CreateCommand {
+func createCreateCommand(appCtx *AppContext, docType config.DocumentType, wsp *workspace.Workspace) *CreateCommand {
 	return &CreateCommand{
 		DocName:      "TestDocument",
 		DocType:      docType,
 		CustomFields: map[string]interface{}{"AnotherField": "Additional Field"},
 		Topic:        "Test Topic",
 		AppCtx:       appCtx,
+		Workspace:    wsp,
 	}
 }
 
@@ -79,7 +81,9 @@ func TestCreateCommand_Execute(t *testing.T) {
 
 	appCtx := createMockAppContext(testDir, mockStartTime)
 	docType := createMockDocumentType()
-	cmd := createCreateCommand(appCtx, docType)
+	wsp, err := workspace.NewWorkspace(testDir)
+	require.NoError(t, err)
+	cmd := createCreateCommand(appCtx, docType, wsp)
 
 	require.NoError(t, cmd.Execute(), "Failed to execute create command")
 

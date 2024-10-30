@@ -6,7 +6,6 @@ import (
 
 	"github.com/matthewchivers/dodl/cmd/wd"
 	"github.com/matthewchivers/dodl/internal/core"
-	"github.com/matthewchivers/dodl/pkg/workspace"
 	"github.com/spf13/cobra"
 )
 
@@ -51,15 +50,6 @@ func resolveTargetDir(workingDir string, args []string) (string, error) {
 	}
 
 	return filepath.Abs(targetDir)
-}
-
-// locateWorkspaceRoot checks if the current working directory is part of an existing workspace and returns the root.
-func locateWorkspaceRoot(workingDir string) (string, error) {
-	workspaceRoot, err := workspace.FindWorkspaceRoot(workingDir)
-	if err != nil && err != workspace.ErrNotInWorkspace {
-		return "", err
-	}
-	return workspaceRoot, nil
 }
 
 // createAppContext initializes the core.AppContext with the provided working directory and workspace root.

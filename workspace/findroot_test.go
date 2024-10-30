@@ -23,45 +23,45 @@ func TestFindWorkspaceRootWithDirs(t *testing.T) {
 	}
 
 	tests := []struct {
-		name        string
-		dirs        []string
-		workingDirectory  string
-		expectRoot  string
-		expectError bool
+		name             string
+		dirs             []string
+		workingDirectory string
+		expectRoot       string
+		expectError      bool
 	}{
 		{
 			name: "finds workspace root in nested directories",
 			dirs: []string{
 				"workspace/.dodl/nested/child",
 			},
-			workingDirectory:  "workspace/.dodl/nested/child",
-			expectRoot:  "workspace",
-			expectError: false,
+			workingDirectory: "workspace/.dodl/nested/child",
+			expectRoot:       "workspace",
+			expectError:      false,
 		},
 		{
 			name: "returns error when not in a workspace",
 			dirs: []string{
 				"dir1/dir2",
 			},
-			workingDirectory:  "dir1/dir2",
-			expectRoot:  "",
-			expectError: true,
+			workingDirectory: "dir1/dir2",
+			expectRoot:       "",
+			expectError:      true,
 		},
 		{
 			name: "detects workspace at the same level",
 			dirs: []string{
 				"workspace/.dodl",
 			},
-			workingDirectory:  "workspace",
-			expectRoot:  "workspace",
-			expectError: false,
+			workingDirectory: "workspace",
+			expectRoot:       "workspace",
+			expectError:      false,
 		},
 		{
-			name:        "handles empty working directory",
-			dirs:        nil,
-			workingDirectory:  "",
-			expectRoot:  "",
-			expectError: true,
+			name:             "handles empty working directory",
+			dirs:             nil,
+			workingDirectory: "",
+			expectRoot:       "",
+			expectError:      true,
 		},
 	}
 

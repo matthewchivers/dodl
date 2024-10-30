@@ -9,7 +9,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/matthewchivers/dodl/config"
+	"github.com/matthewchivers/dodl/pkg/config"
 )
 
 func setupTestEnvironment(t *testing.T, testDir string) (templateFilePath string, dodlDir string) {

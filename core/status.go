@@ -3,7 +3,7 @@ package core
 import (
 	"fmt"
 
-	"github.com/matthewchivers/dodl/config"
+	"github.com/matthewchivers/dodl/pkg/config"
 )
 
 type StatusCommand struct {

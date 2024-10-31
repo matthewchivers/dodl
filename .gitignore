@@ -39,3 +39,6 @@ __debug_bin*
 
 # DS_Store files
 .DS_Store
+
+# goreleaser artifacts
+dist/

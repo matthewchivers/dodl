@@ -3,9 +3,9 @@ package status
 import (
 	"time"
 
-	"github.com/matthewchivers/dodl/cmd/wd"
 	"github.com/matthewchivers/dodl/internal/core"
 	"github.com/matthewchivers/dodl/pkg/config"
+	wd "github.com/matthewchivers/dodl/pkg/workingdir"
 	"github.com/matthewchivers/dodl/pkg/workspace"
 	"github.com/spf13/cobra"
 )

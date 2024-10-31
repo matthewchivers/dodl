@@ -2,7 +2,8 @@ name: Go CI
 
 on:
   pull_request:
-    branches: [ "main" ]
+    branches: 
+      - main
 
 jobs:
   fmt:

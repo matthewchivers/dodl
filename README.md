@@ -1,12 +1,14 @@
 # dodl
 
-`dodl` is a command-line tool for creating structured documents quickly and effortlessly. With a few simple comamnds, `dodl` generates documents and automatically organises them in appropriate directories, using templates you define.
+`dodl` is a command-line tool for creating structured documents quickly and effortlessly.  With a few simple comamnds, `dodl` generates documents and automatically organises them in appropriate directories, using templates you define.
+
+`dodl` supports standard plaintext documents such as `.txt` and `.md` (markdown).
 
 ### What Problem Does `dodl` Solve?
 
-Creating structured documents can be time-consuming. Setting up folders, creating filenames, and ensuring consistent formatting takes effort. `dodl` automates these repetitive tasks, so you can focus directly on writing and getting work done.
+Creating structured documents can be time-consuming.  Setting up folders, creating filenames, and ensuring consistent formatting takes effort. `dodl` automates these repetitive tasks, so you can focus directly on writing and getting work done.
 
-Explore `dodl` today and simplify your workflow. For questions or suggestions, please open an issue on [GitHub](https://github.com/matthewchivers/dodl).
+Explore `dodl` today and simplify your workflow.  For questions or suggestions, please open an issue on [GitHub](https://github.com/matthewchivers/dodl).
 
 ## Get Started
 
@@ -27,7 +29,7 @@ Navigate to a directory that is to be your `dodl` workspace and run:
 dodl init
 ```
 
-This command crates a `.dodl` directory in your current location. This directory holds all configurations and templates that `dodl` uses to operate.
+This command creates a `.dodl` directory in your current location.  This directory holds all configurations and templates that `dodl` uses to operate.
 
 ### Create a document
 
@@ -35,7 +37,7 @@ This command crates a `.dodl` directory in your current location. This directory
 dodl create [document-type]
 ```
 
-Replace `[document-type]` with any document type you've defined in `config.yaml` (see [configure your workspace](#configure-your-workspace)). 
+Replace `[document-type]` with any document type you've defined in `config.yaml` (see [configure your workspace](#configure-your-workspace)).
 
 Override fields at runtime for custom values, example:
 
@@ -47,7 +49,7 @@ The document will be saved based on your templates, e.g. `workspace/2027/March/2
 
 ## Templating
 
-Use placeholders like `{{ .Now }}` or `{{ .Topic }}` to dynamically generate content in document templates, directory structures, or filenames. Perfect for notes, journals, reports and more. `dodl` templating makes consistent file naming and structuring simple and easy (as well as powerful where needed).
+Use placeholders like `{{ .Now }}` or `{{ .Topic }}` to dynamically generate content in document templates, directory structures, or filenames.  `dodl` templating makes it easy to have consistent file naming, directory structuring, and document formatting.  The templating is simple to start with, but can be extended in powerful ways (see examples below).
 
 #### Examples:
 * `{{ .Topic }}` where the Topic field is "Project X" -> `Project X`
@@ -55,7 +57,7 @@ Use placeholders like `{{ .Now }}` or `{{ .Topic }}` to dynamically generate con
 * `{{ .Now | date "2006/01" }}` uses golang date formatting -> `2024/10`
 * `{{ addDays .Now 6 | date "02-01-06 }}` (if today is 28-Oct-24) -> `03-11-24`
 
-Templating uses golang's `text/template` alongside http://masterminds.github.io/sprig/ - which provides functionality such as `upper` and `date` seen above.
+Templating uses golang's `text/template` alongside http://masterminds.github.io/sprig/ - which provides functions such as `upper` and `date` seen above.
 
 ## Configure Your Workspace
 
@@ -64,13 +66,15 @@ Customise `dodl` by editing `.dodl/config.yaml`, and adding templates to `.dodl/
 ### Example `config.yaml`
 ``` yaml
 default_document_type: journal
+custom_fields:
+  author: "Full Name"
 document_types:
   journal:
     template_file: "journal.md"
     file_name_pattern: "journal {{ .Now | date \"02 Jan '06\" }}.md"
     directory_pattern: "{{ .Now | date \"2006\" }}/{{ .Now | date \"January\" }}"
     custom_fields:
-      author: "Your Name"
+      author: "First Name"
   meeting:
     template_file: "meeting.md"
     file_name_pattern: "{{ .Topic }} {{ .Now | date \"02-01-2006\" }}.md"
@@ -93,11 +97,11 @@ Example template using the custom field `author` (as in example config above).
 
 ## Status
 
-`dodl` is in active development, with core features like templating, configuration, and document creation already implemented. Natural language date parsing is coming soo. Contributions and feedback are welcome!
+`dodl` is in active development, with core features like templating, configuration, and document creation already implemented. Natural language date parsing is coming soo.  Contributions and feedback are welcome!
 
 ## Contributing
 
-I love open-source, and I love contributions! Fork the repository and submite a pull request! For major changes, please open an issue first to discuss your ideas.
+Open-source is good for the world, and contributions are encouraged.  Fork the repository and submit a pull request!  For major changes, please open an issue first to discuss your ideas.
 
 ## License
-`dodl` is released under the MIT license, making it free to use, modify, and share. All I require is attribution (to Matthew Chivers).
+`dodl` is released under the MIT license, making it free to use, modify, and share.  Requires attribution to Matthew Chivers (the original author of `dodl`).

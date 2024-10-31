@@ -7,7 +7,7 @@ import (
 	"github.com/matthewchivers/dodl/cmd/create"
 	"github.com/matthewchivers/dodl/cmd/initialise"
 	"github.com/matthewchivers/dodl/cmd/status"
-	"github.com/matthewchivers/dodl/cmd/wd"
+	wd "github.com/matthewchivers/dodl/pkg/workingdir"
 	"github.com/spf13/cobra"
 )
 

@@ -4,8 +4,8 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/matthewchivers/dodl/cmd/wd"
 	"github.com/matthewchivers/dodl/internal/core"
+	wd "github.com/matthewchivers/dodl/pkg/workingdir"
 	"github.com/spf13/cobra"
 )
 

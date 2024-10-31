@@ -3,7 +3,7 @@ package initialise
 import (
 	"testing"
 
-	"github.com/matthewchivers/dodl/cmd/wd"
+	wd "github.com/matthewchivers/dodl/pkg/workingdir"
 	"github.com/stretchr/testify/assert"
 )
 

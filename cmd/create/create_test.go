@@ -42,8 +42,8 @@ func setupConfigFile(t *testing.T, rootDir string) {
 document_types:
   journal:
     template_file: "journal.md"
-    file_name_pattern: "{{.Year}}-{{.Month}}-{{.Day}}.md"
-    directory_pattern: "{{.Year}}/{{.Month}}"
+    file_name_pattern: "{{.Today}}-journal.md"
+    directory_pattern: "{{.Today}}-dir"
 `
 
 	configFilePath := filepath.Join(rootDir, ".dodl", "config.yaml")

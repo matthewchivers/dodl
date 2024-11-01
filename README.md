@@ -71,7 +71,7 @@ custom_fields:
 document_types:
   journal:
     template_file: "journal.md"
-    file_name_pattern: "journal-{{ .Now | date \"02-01-2006\" }}.md" # e.g. journal-
+    file_name_pattern: "journal-{{ .Now | date \"02-01-2006\" }}.md" # e.g. journal-28-10-24.md
     directory_pattern: # e.g. 2024/October
       - "{{ .Now | date \"2006\" }}"
       - "{{ .Now | date \"January\" }}"

@@ -7,6 +7,7 @@ import (
 	"github.com/matthewchivers/dodl/pkg/config"
 	"github.com/matthewchivers/dodl/pkg/filesystem"
 	"github.com/matthewchivers/dodl/pkg/templating"
+	"github.com/matthewchivers/dodl/pkg/validation"
 	"github.com/matthewchivers/dodl/pkg/workspace"
 )
 
@@ -41,11 +42,17 @@ func (c *CreateCommand) Execute() error {
 	if err != nil {
 		return err
 	}
+	if err := validation.ValidatePathPart(filename); err != nil {
+		return err
+	}
 
 	dirParts := []string{}
 	for _, part := range c.DocType.DirectoryPattern {
 		dirPart, err := templating.RenderTemplate(part, data)
 		if err != nil {
+			return err
+		}
+		if err := validation.ValidatePathPart(dirPart); err != nil {
 			return err
 		}
 		dirParts = append(dirParts, dirPart)

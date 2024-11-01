@@ -132,7 +132,7 @@ func deepMergeConfig(dst, src *Config) {
 			if v.FileNamePattern != "" {
 				existing.FileNamePattern = v.FileNamePattern
 			}
-			if v.DirectoryPattern != "" {
+			if len(v.DirectoryPattern) > 0 {
 				existing.DirectoryPattern = v.DirectoryPattern
 			}
 			if existing.CustomFields == nil {

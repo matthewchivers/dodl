@@ -43,7 +43,7 @@ document_types:
   journal:
     template_file: "journal.md"
     file_name_pattern: "{{.Today}}-journal.md"
-    directory_pattern: "{{.Today}}-dir"
+    directory_pattern: ["{{.Today}}-dir"]
 `
 
 	configFilePath := filepath.Join(rootDir, ".dodl", "config.yaml")

@@ -11,11 +11,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var version = "dev"
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "dodl",
-	Short: "dodl is a document creation tool",
-	Long:  `dodl is a command-line tool for creating structured documents using templates.`,
+	Use:     "dodl",
+	Version: version,
+	Short:   "dodl is a document creation tool",
+	Long:    `dodl is a command-line tool for creating structured documents using templates.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("Welcome to dodl! Run 'dodl help' to get started.")
 	},

@@ -18,8 +18,8 @@ custom_fields:
 document_types:
   markdown:
     template_file: "default.md"
-    file_name_pattern: "{{.Title}}.md"
-    directory_pattern: "{{.Year}}/{{.Month}}"
+    file_name_pattern: "{{ .DocType }}.md"
+    directory_pattern: "{{ .Today | date \"2006\"}}/{{ .Today | date \"Jan\" }}"
 `
 
 	filePath := filepath.Join(tempDir, "config.yaml")
@@ -35,8 +35,8 @@ document_types:
 	assert.Equal(t, "markdown", config.DefaultDocumentType)
 	assert.Equal(t, "Test User", config.CustomFields["author"])
 	assert.Equal(t, "default.md", config.DocumentTypes["markdown"].TemplateFile)
-	assert.Equal(t, "{{.Title}}.md", config.DocumentTypes["markdown"].FileNamePattern)
-	assert.Equal(t, "{{.Year}}/{{.Month}}", config.DocumentTypes["markdown"].DirectoryPattern)
+	assert.Equal(t, "{{ .DocType }}.md", config.DocumentTypes["markdown"].FileNamePattern)
+	assert.Equal(t, "{{ .Today | date \"2006\"}}/{{ .Today | date \"Jan\" }}", config.DocumentTypes["markdown"].DirectoryPattern)
 }
 
 // TestLoadConfigurationsMultipleLayers verifies that configurations are loaded from multiple layers (and merged correctly)
@@ -88,8 +88,8 @@ custom_fields:
 document_types:
   journal:
     template_file: "user.md"
-    directory_pattern: "{{.Year}}/{{.Month}}"
-    file_name_pattern: "{{.Title}}.md"
+    directory_pattern: "{{ .Today | date \"2006\" }}/{{ .Today | date \"Jan\" }}"
+    file_name_pattern: ".{{ .DocType }}.md"
     custom_fields:
       mood: "sad"
 `
@@ -98,13 +98,13 @@ document_types:
 document_types:
   journal:
     template_file: "workspace.md"
-    file_name_pattern: "workspace-{{.Title}}.md"
-    directory_pattern: "{{.Year}}/workspaceoverride"
+    file_name_pattern: "workspace-{{ .DocType }}.md"
+    directory_pattern: "{{ .Today | date \"2006\" }}/workspaceoverride"
     custom_fields:
       mood: "happy"
   planning:
     template_file: "planning.md"
-    file_name_pattern: "plan-{{.Year}}-{{.Month}}-{{.Day}}.md"
+    file_name_pattern: "plan-{{ .Today | date \"2006\" }}-{{ .Today | date \"Jan\" }}-{{ .Today | date \"02\" }}.md"
 `
 
 	userConfigPath := filepath.Join(userTempDir, "config.yaml")
@@ -128,14 +128,14 @@ document_types:
 	journalDocType := config.DocumentTypes["journal"]
 	assert.NotNil(t, journalDocType)
 	assert.Equal(t, "workspace.md", journalDocType.TemplateFile)
-	assert.Equal(t, "{{.Year}}/workspaceoverride", journalDocType.DirectoryPattern)
-	assert.Equal(t, "workspace-{{.Title}}.md", journalDocType.FileNamePattern)
+	assert.Equal(t, "{{ .Today | date \"2006\" }}/workspaceoverride", journalDocType.DirectoryPattern)
+	assert.Equal(t, "workspace-{{ .DocType }}.md", journalDocType.FileNamePattern)
 	assert.Equal(t, "happy", journalDocType.CustomFields["mood"])
 
 	planningDocType := config.DocumentTypes["planning"]
 	assert.NotNil(t, planningDocType)
 	assert.Equal(t, "planning.md", planningDocType.TemplateFile)
-	assert.Equal(t, "plan-{{.Year}}-{{.Month}}-{{.Day}}.md", planningDocType.FileNamePattern)
+	assert.Equal(t, "plan-{{ .Today | date \"2006\" }}-{{ .Today | date \"Jan\" }}-{{ .Today | date \"02\" }}.md", planningDocType.FileNamePattern)
 }
 
 // TestLoadConfigurationsMissingFile verifies that an error is returned when the configuration file is missing

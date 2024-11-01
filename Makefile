@@ -3,6 +3,7 @@ BINARY_NAME=dodl
 PKG=./...
 PLATFORMS=linux darwin windows
 ARCHITECTURES=amd64 arm64
+VERSION ?= $(shell git describe --tags --abbrev=0)
 
 default: build
 
@@ -12,8 +13,7 @@ build: test
 		for GOARCH in $(ARCHITECTURES); do \
 			echo "Building for $$GOOS/$$GOARCH..."; \
 			mkdir -p $(BUILD_DIR) && \
-			GOOS=$$GOOS GOARCH=$$GOARCH go build -o $(BUILD_DIR)/$(BINARY_NAME)-$$GOOS-$$GOARCH; \
-		done; \
+			GOOS=$$GOOS GOARCH=$$GOARCH go build -ldflags="-X github.com/matthewchivers/dodl/cmd.version=$(VERSION)" -o $(BUILD_DIR)/$(BINARY_NAME)-$$GOOS-$$GOARCH; \		done; \
 	done
 
 test: vet

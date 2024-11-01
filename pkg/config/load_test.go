@@ -19,7 +19,9 @@ document_types:
   markdown:
     template_file: "default.md"
     file_name_pattern: "{{ .DocType }}.md"
-    directory_pattern: "{{ .Today | date \"2006\"}}/{{ .Today | date \"Jan\" }}"
+    directory_pattern:
+        - "{{ .Today | date \"2006\"}}"
+        - "{{ .Today | date \"Jan\" }}"
 `
 
 	filePath := filepath.Join(tempDir, "config.yaml")
@@ -36,7 +38,7 @@ document_types:
 	assert.Equal(t, "Test User", config.CustomFields["author"])
 	assert.Equal(t, "default.md", config.DocumentTypes["markdown"].TemplateFile)
 	assert.Equal(t, "{{ .DocType }}.md", config.DocumentTypes["markdown"].FileNamePattern)
-	assert.Equal(t, "{{ .Today | date \"2006\"}}/{{ .Today | date \"Jan\" }}", config.DocumentTypes["markdown"].DirectoryPattern)
+	assert.Equal(t, []string{"{{ .Today | date \"2006\"}}", "{{ .Today | date \"Jan\" }}"}, config.DocumentTypes["markdown"].DirectoryPattern)
 }
 
 // TestLoadConfigurationsMultipleLayers verifies that configurations are loaded from multiple layers (and merged correctly)
@@ -88,7 +90,9 @@ custom_fields:
 document_types:
   journal:
     template_file: "user.md"
-    directory_pattern: "{{ .Today | date \"2006\" }}/{{ .Today | date \"Jan\" }}"
+    directory_pattern: [
+        "{{ .Today | date \"2006\" }}",
+        "{{ .Today | date \"Jan\" }}"]
     file_name_pattern: ".{{ .DocType }}.md"
     custom_fields:
       mood: "sad"
@@ -99,7 +103,7 @@ document_types:
   journal:
     template_file: "workspace.md"
     file_name_pattern: "workspace-{{ .DocType }}.md"
-    directory_pattern: "{{ .Today | date \"2006\" }}/workspaceoverride"
+    directory_pattern: [ "{{ .Today | date \"2006\" }}", "workspaceoverride" ]
     custom_fields:
       mood: "happy"
   planning:
@@ -128,7 +132,7 @@ document_types:
 	journalDocType := config.DocumentTypes["journal"]
 	assert.NotNil(t, journalDocType)
 	assert.Equal(t, "workspace.md", journalDocType.TemplateFile)
-	assert.Equal(t, "{{ .Today | date \"2006\" }}/workspaceoverride", journalDocType.DirectoryPattern)
+	assert.Equal(t, []string{"{{ .Today | date \"2006\" }}", "workspaceoverride"}, journalDocType.DirectoryPattern)
 	assert.Equal(t, "workspace-{{ .DocType }}.md", journalDocType.FileNamePattern)
 	assert.Equal(t, "happy", journalDocType.CustomFields["mood"])
 

@@ -44,10 +44,14 @@ func createMockAppContext(testDir string, mockStartTime time.Time) *AppContext {
 // createMockDocumentType creates a mock document type for testing
 func createMockDocumentType() config.DocumentType {
 	return config.DocumentType{
-		FileNamePattern:  "notes/{{ .Today | date \"2006-01-02\" }}-{{ .DocName }}.md",
-		DirectoryPattern: "docs/{{ .Today | date \"2006\" }}/{{ .Today | date \"January\" }}",
-		TemplateFile:     "test_template.md",
-		CustomFields:     map[string]interface{}{"CustomField": "Example Custom Field"},
+		FileNamePattern: "{{ .Today | date \"2006-01-02\" }}-{{ .DocName }}.md",
+		DirectoryPattern: []string{
+			"docs",
+			"{{ .Today | date \"2006\" }}",
+			"{{ .Today | date \"January\" }}",
+		},
+		TemplateFile: "test_template.md",
+		CustomFields: map[string]interface{}{"CustomField": "Example Custom Field"},
 	}
 }
 
@@ -94,7 +98,7 @@ func TestCreateCommand_Execute(t *testing.T) {
 	require.NoError(t, cmd.Execute(), "Failed to execute create command")
 
 	expectedDirPath := filepath.Join(testDir, "docs", mockStartTime.Format("2006"), mockStartTime.Format("January"))
-	expectedFilePath := filepath.Join(expectedDirPath, "notes", fmt.Sprintf("%s-TestDocument.md", mockStartTime.Format("2006-01-02")))
+	expectedFilePath := filepath.Join(expectedDirPath, fmt.Sprintf("%s-TestDocument.md", mockStartTime.Format("2006-01-02")))
 
 	expectedContent := fmt.Sprintf(`Document Title: TestDocument
 Date: %s

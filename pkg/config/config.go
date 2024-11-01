@@ -25,7 +25,7 @@ type DocumentType struct {
 
 	// DirectoryPattern is the pattern to use when generating the directory for a document.
 	// The pattern is a Go template string, and the directory is relative to the workspace root.
-	DirectoryPattern string `yaml:"directory_pattern"`
+	DirectoryPattern []string `yaml:"directory_pattern"`
 
 	// CustomFields are the custom fields that can be used in document templates.
 	// At this level, these are the custom fields that are available to only this document type.

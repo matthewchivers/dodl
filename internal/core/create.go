@@ -42,10 +42,15 @@ func (c *CreateCommand) Execute() error {
 		return err
 	}
 
-	dirname, err := templating.RenderTemplate(c.DocType.DirectoryPattern, data)
-	if err != nil {
-		return err
+	dirParts := []string{}
+	for _, part := range c.DocType.DirectoryPattern {
+		dirPart, err := templating.RenderTemplate(part, data)
+		if err != nil {
+			return err
+		}
+		dirParts = append(dirParts, dirPart)
 	}
+	dirname := filepath.Join(dirParts...)
 
 	templateData, err := c.Workspace.LoadTemplate(c.DocType.TemplateFile)
 	if err != nil {

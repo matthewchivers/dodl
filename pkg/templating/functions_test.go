@@ -253,3 +253,42 @@ func TestDaysInMonth(t *testing.T) {
 		})
 	}
 }
+
+// TestWeekNumber tests the weekNumber function.
+func TestWeekNumber(t *testing.T) {
+	testCases := []struct {
+		name     string
+		date     time.Time
+		expected int
+	}{
+		{
+			name:     "ISO week 1",
+			date:     time.Date(2023, time.January, 1, 0, 0, 0, 0, time.UTC),
+			expected: 52,
+		},
+		{
+			name:     "ISO week 2",
+			date:     time.Date(2023, time.January, 8, 0, 0, 0, 0, time.UTC),
+			expected: 1,
+		},
+		{
+			name:     "ISO week 53",
+			date:     time.Date(2023, time.December, 31, 0, 0, 0, 0, time.UTC),
+			expected: 52,
+		},
+		{
+			name:     "ISO week 1 in leap year",
+			date:     time.Date(2024, time.January, 1, 0, 0, 0, 0, time.UTC),
+			expected: 1,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			result := weekNumber(tc.date)
+			if result != tc.expected {
+				t.Errorf("Expected %d, got %d", tc.expected, result)
+			}
+		})
+	}
+}

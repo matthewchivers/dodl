@@ -13,6 +13,7 @@ func addCustomFuncs(funcMap template.FuncMap) template.FuncMap {
 	funcMap["WeekStart"] = WeekStart
 	funcMap["daysInYear"] = daysInYear
 	funcMap["daysInMonth"] = daysInMonth
+	funcMap["weekNumber"] = weekNumber
 	return funcMap
 }
 
@@ -50,4 +51,11 @@ func daysInYear(t time.Time) int {
 // e.g. 31 for January, 28 for February (non-leap year), 29 for February (leap year).
 func daysInMonth(t time.Time) int {
 	return time.Date(t.Year(), t.Month()+1, 0, 0, 0, 0, 0, t.Location()).Day()
+}
+
+// weekNumber returns the week number of the given date.
+// The week number is defined as the ISO 8601 week number.
+func weekNumber(t time.Time) int {
+	_, week := t.ISOWeek()
+	return week
 }

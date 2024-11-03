@@ -66,6 +66,12 @@ func TestRenderTemplate_DirectoryPatterns(t *testing.T) {
 			testTime: time.Date(2024, time.October, 29, 0, 0, 0, 0, time.UTC),
 			expected: "28 Oct to 03 Nov",
 		},
+		{
+			name:     "Week number",
+			template: "Week {{ .Now | weekNumber }}",
+			testTime: time.Date(2024, time.October, 29, 0, 0, 0, 0, time.UTC),
+			expected: "Week 44",
+		},
 	}
 
 	for _, tc := range testCases {

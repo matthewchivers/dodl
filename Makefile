@@ -13,7 +13,8 @@ build: test
 		for GOARCH in $(ARCHITECTURES); do \
 			echo "Building for $$GOOS/$$GOARCH..."; \
 			mkdir -p $(BUILD_DIR) && \
-			GOOS=$$GOOS GOARCH=$$GOARCH go build -ldflags="-X github.com/matthewchivers/dodl/cmd.version=$(VERSION)" -o $(BUILD_DIR)/$(BINARY_NAME)-$$GOOS-$$GOARCH; \		done; \
+			GOOS=$$GOOS GOARCH=$$GOARCH go build -ldflags="-X github.com/matthewchivers/dodl/cmd.version=$(VERSION)" -o $(BUILD_DIR)/$(BINARY_NAME)-$$GOOS-$$GOARCH; \
+		done; \
 	done
 
 test: vet

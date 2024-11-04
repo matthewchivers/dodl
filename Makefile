@@ -46,4 +46,8 @@ install: build
 	@echo "Installing the binary..."
 	go install ./
 
+release: build
+	@echo "Creating release..."
+	goreleaser release --rm-dist
+
 .PHONY: build test fmt lint vet clean deps install

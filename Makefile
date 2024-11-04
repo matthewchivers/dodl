@@ -48,6 +48,6 @@ install: build
 
 release: build
 	@echo "Creating release..."
-	goreleaser release --rm-dist
+	goreleaser release --clean
 
 .PHONY: build test fmt lint vet clean deps install

@@ -3,12 +3,13 @@ BINARY_NAME=dodl
 PKG=./...
 PLATFORMS=linux darwin windows
 ARCHITECTURES=amd64 arm64
-VERSION ?= $(shell git describe --tags --abbrev=0)
+VERSION := $(shell git describe --tags --abbrev=0)
 
 default: build
 
 build: test
 	@echo "Building for all platforms and architectures..."
+	@echo "Detected Version: $(VERSION)"
 	@for GOOS in $(PLATFORMS); do \
 		for GOARCH in $(ARCHITECTURES); do \
 			echo "Building for $$GOOS/$$GOARCH..."; \

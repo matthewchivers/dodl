@@ -44,3 +44,32 @@ changelog:
     exclude:
       - "^docs:"
       - "^test:"
+
+brews:
+  - name: dodl
+    url_template: "https://github.com/matthewchivers/dodl/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
+    commit_author:
+      name: goreleaserbot
+      email: bot@goreleaser.com
+    commit_msg_template: "Brew formula update for {{ .ProjectName }} version {{ .Tag }}"
+    directory: Formula
+    caveats: "Note: This formula only supports macOS and Linux"
+    homepage: "https://github.com/matthewchivers/dodl"
+    description: "A cli tool that automates the creation and organisation of structured documents using custom templates."
+    license: "MIT"
+    dependencies:
+      - name: go
+    test: |
+      system "#{bin}/dodl --version"
+    install: |
+      bin.install "dodl"
+    repository:
+      owner: matthewchivers
+      name: homebrew-dodl
+      branch: "{{.ProjectName}}-{{.Version}}"
+      pull_request:
+        enabled: true
+        base:
+          owner: matthewchivers
+          name: homebrew-dodl
+          branch: main

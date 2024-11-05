@@ -64,17 +64,18 @@ func runCreateE(args []string, wdProv wd.WorkingDirProvider) error {
 		return fmt.Errorf("document type %s not found in configuration", docTypeName)
 	}
 
-	startTime := time.Now()
+	refTime := time.Now()
 	if dateStr != "" {
-		startTime, err = time.Parse("02-01-2006", dateStr)
+		refTime, err = time.Parse("02-01-2006", dateStr)
 		if err != nil {
 			return fmt.Errorf("failed to parse date: %w", err)
 		}
 	}
 
 	appCtx := &core.AppContext{
-		WorkingDir: workingDir,
-		StartTime:  startTime,
+		WorkingDir:    workingDir,
+		StartTime:     time.Now(),
+		ReferenceTime: refTime,
 	}
 
 	createCmd := core.CreateCommand{

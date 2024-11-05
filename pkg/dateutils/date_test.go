@@ -1,4 +1,4 @@
-package templating
+package dateutils
 
 import (
 	"testing"
@@ -41,7 +41,7 @@ func TestAddDays(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			result := addDays(tc.start, tc.days)
+			result := AddDays(tc.start, tc.days)
 			if !result.Equal(tc.expected) {
 				t.Errorf("Expected %v, got %v", tc.expected, result)
 			}
@@ -85,7 +85,7 @@ func TestAddMonths(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			result := addMonths(tc.start, tc.months)
+			result := AddMonths(tc.start, tc.months)
 			if !result.Equal(tc.expected) {
 				t.Errorf("Expected %v, got %v", tc.expected, result)
 			}
@@ -129,7 +129,7 @@ func TestAddYears(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			result := addYears(tc.start, tc.years)
+			result := AddYears(tc.start, tc.years)
 			if !result.Equal(tc.expected) {
 				t.Errorf("Expected %v, got %v", tc.expected, result)
 			}
@@ -164,11 +164,16 @@ func TestWeekStart(t *testing.T) {
 			date:     time.Date(2024, time.December, 31, 0, 0, 0, 0, time.UTC),
 			expected: time.Date(2024, time.December, 30, 0, 0, 0, 0, time.UTC),
 		},
+		{
+			name:     "Beginning of year",
+			date:     time.Date(2025, time.January, 1, 0, 0, 0, 0, time.UTC),
+			expected: time.Date(2024, time.December, 30, 0, 0, 0, 0, time.UTC),
+		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			result := WeekStart(tc.date)
+			result := GetDefaultWeekStartDate(tc.date)
 			if !result.Equal(tc.expected) {
 				t.Errorf("Expected %v, got %v", tc.expected, result)
 			}
@@ -207,7 +212,7 @@ func TestDaysInYear(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			result := daysInYear(tc.date)
+			result := DaysInYear(tc.date)
 			if result != tc.expected {
 				t.Errorf("Expected %d, got %d", tc.expected, result)
 			}
@@ -246,7 +251,7 @@ func TestDaysInMonth(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			result := daysInMonth(tc.date)
+			result := DaysInMonth(tc.date)
 			if result != tc.expected {
 				t.Errorf("Expected %d, got %d", tc.expected, result)
 			}
@@ -285,7 +290,7 @@ func TestWeekNumber(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			result := weekNumber(tc.date)
+			result := WeekNumber(tc.date)
 			if result != tc.expected {
 				t.Errorf("Expected %d, got %d", tc.expected, result)
 			}

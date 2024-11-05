@@ -34,10 +34,11 @@ AnotherField: {{ .AnotherField }}`
 }
 
 // createMockAppContext creates a mock application context for testing
-func createMockAppContext(testDir string, mockStartTime time.Time) *AppContext {
+func createMockAppContext(testDir string, mockReferenceTime time.Time) *AppContext {
 	return &AppContext{
-		WorkingDir: testDir,
-		StartTime:  mockStartTime,
+		WorkingDir:    testDir,
+		StartTime:     time.Now(),
+		ReferenceTime: mockReferenceTime,
 	}
 }
 
@@ -86,10 +87,10 @@ func TestCreateCommand_Execute(t *testing.T) {
 	setupTestEnvironment(t, testDir)
 
 	mockDate := "2024-10-29"
-	mockStartTime, err := time.Parse("2006-01-02", mockDate)
+	mockReferenceTime, err := time.Parse("2006-01-02", mockDate)
 	require.NoError(t, err)
 
-	appCtx := createMockAppContext(testDir, mockStartTime)
+	appCtx := createMockAppContext(testDir, mockReferenceTime)
 	docType := createMockDocumentType()
 	wsp, err := workspace.NewWorkspace(testDir)
 	require.NoError(t, err)
@@ -97,14 +98,14 @@ func TestCreateCommand_Execute(t *testing.T) {
 
 	require.NoError(t, cmd.Execute(), "Failed to execute create command")
 
-	expectedDirPath := filepath.Join(testDir, "docs", mockStartTime.Format("2006"), mockStartTime.Format("January"))
-	expectedFilePath := filepath.Join(expectedDirPath, fmt.Sprintf("%s-TestDocument.md", mockStartTime.Format("2006-01-02")))
+	expectedDirPath := filepath.Join(testDir, "docs", mockReferenceTime.Format("2006"), mockReferenceTime.Format("January"))
+	expectedFilePath := filepath.Join(expectedDirPath, fmt.Sprintf("%s-TestDocument.md", mockReferenceTime.Format("2006-01-02")))
 
 	expectedContent := fmt.Sprintf(`Document Title: TestDocument
 Date: %s
 Topic: Test Topic
 CustomField: Example Custom Field
-AnotherField: Additional Field`, mockStartTime.Format("02-01-2006"))
+AnotherField: Additional Field`, mockReferenceTime.Format("02-01-2006"))
 
 	verifyGeneratedDocument(t, expectedDirPath, expectedFilePath, expectedContent)
 }

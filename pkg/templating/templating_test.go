@@ -3,20 +3,12 @@ package templating
 import (
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
-// prepareTestTimes creates a map with the test time and derived values.
-func prepareTestTimes(testTime time.Time) map[string]interface{} {
-	data := map[string]interface{}{
-		"Now":       testTime,
-		"Today":     testTime,
-		"WeekStart": WeekStart(testTime),
-	}
-	return data
-}
-
-// TestRenderTemplate_DirectoryPatterns tests rendering directory patterns.
-func TestRenderTemplate_DirectoryPatterns(t *testing.T) {
+// TestRenderTemplate_GeneralPatterns tests rendering general patterns.
+func TestRenderTemplate_GeneralPatterns(t *testing.T) {
 	testCases := []struct {
 		name         string
 		template     string
@@ -26,9 +18,9 @@ func TestRenderTemplate_DirectoryPatterns(t *testing.T) {
 	}{
 		{
 			name:     "Standard date",
-			template: "{{ .Now | date \"2006/01\" }}/wc {{ .WeekStart | date \"02-01-06\" }}",
+			template: "{{ .Now | date \"2006-01\" }}",
 			testTime: time.Date(2024, time.October, 29, 0, 0, 0, 0, time.UTC),
-			expected: "2024/10/wc 28-10-24",
+			expected: "2024-10",
 		},
 		{
 			name:     "Standard date - no format specified",
@@ -38,33 +30,45 @@ func TestRenderTemplate_DirectoryPatterns(t *testing.T) {
 		},
 		{
 			name:     "Custom Field",
-			template: "{{ .Now | date \"2006/01\" }}/{{.Author}}/wc {{ .WeekStart | date \"02-01-06\" }}",
+			template: "{{.Author}}",
 			customFields: map[string]interface{}{
 				"Author": "Alice",
 			},
 			testTime: time.Date(2023, time.November, 15, 0, 0, 0, 0, time.UTC),
-			expected: "2023/11/Alice/wc 13-11-23",
+			expected: "Alice",
 		},
 		{
 			name:     "uppercase custom field",
-			template: "{{ .Now | date \"2006/01\" }}/{{.Author | upper}}/wc {{ .WeekStart | date \"02-01-06\" }}",
+			template: "{{.Author | upper}}",
 			customFields: map[string]interface{}{
 				"Author": "Alice",
 			},
 			testTime: time.Date(2023, time.November, 15, 0, 0, 0, 0, time.UTC),
-			expected: "2023/11/ALICE/wc 13-11-23",
+			expected: "ALICE",
 		},
 		{
-			name:     "Edge case - Sunday",
-			template: "{{ .Now | date \"2006/01\" }}/wc {{ .WeekStart | date \"2 Jan 2006\" }}",
-			testTime: time.Date(2024, time.January, 7, 0, 0, 0, 0, time.UTC),
-			expected: "2024/01/wc 1 Jan 2024",
+			name:     "WeekStart - Sunday",
+			template: "{{ .WeekStart | date \"2 Jan 2006\" }}",
+			testTime: time.Date(2024, time.October, 27, 0, 0, 0, 0, time.UTC),
+			expected: "21 Oct 2024",
 		},
 		{
 			name:     "Range from week-start to week-end (start + 6 days)",
 			template: "{{ .WeekStart | date \"02 Jan\" }} to {{ addDays .WeekStart 6 | date \"02 Jan\" }}",
 			testTime: time.Date(2024, time.October, 29, 0, 0, 0, 0, time.UTC),
 			expected: "28 Oct to 03 Nov",
+		},
+		{
+			name:     "Range from week-start to week-end (start + 6 days) - different months",
+			template: "{{ .WeekStart | date \"02 Jan\" }} to {{ addDays .WeekStart 6 | date \"02 Jan\" }}",
+			testTime: time.Date(2024, time.April, 30, 0, 0, 0, 0, time.UTC),
+			expected: "29 Apr to 05 May",
+		},
+		{
+			name:     "Week Start calculated after pipe",
+			template: "{{ .Now | calcWeekStart | date \"02 Jan 2006\" }}",
+			testTime: time.Date(2024, time.October, 30, 0, 0, 0, 0, time.UTC),
+			expected: "28 Oct 2024",
 		},
 		{
 			name:     "Week number",
@@ -74,19 +78,17 @@ func TestRenderTemplate_DirectoryPatterns(t *testing.T) {
 		},
 	}
 
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			data := prepareTestTimes(tc.testTime)
-			for k, v := range tc.customFields {
+	for _, tt := range testCases {
+		t.Run(tt.name, func(t *testing.T) {
+			data := make(map[string]interface{})
+			for k, v := range tt.customFields {
 				data[k] = v
 			}
-			result, err := RenderTemplate(tc.template, data)
+			result, err := RenderTemplate(tt.template, data, tt.testTime)
 			if err != nil {
 				t.Fatalf("RenderTemplate failed: %v", err)
 			}
-			if result != tc.expected {
-				t.Errorf("Expected '%s', got '%s'", tc.expected, result)
-			}
+			assert.Equal(t, tt.expected, result)
 		})
 	}
 }
@@ -94,11 +96,10 @@ func TestRenderTemplate_DirectoryPatterns(t *testing.T) {
 // TestRenderTemplate_FileNamePatterns tests rendering file name patterns.
 func TestRenderTemplate_FileNamePatterns(t *testing.T) {
 	testCases := []struct {
-		name         string
-		template     string
-		customFields map[string]interface{}
-		testTime     time.Time
-		expected     string
+		name     string
+		template string
+		testTime time.Time
+		expected string
 	}{
 		{
 			name:     "Standard filename",
@@ -114,15 +115,15 @@ func TestRenderTemplate_FileNamePatterns(t *testing.T) {
 		},
 	}
 
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			data := prepareTestTimes(tc.testTime)
-			result, err := RenderTemplate(tc.template, data)
+	for _, tt := range testCases {
+		t.Run(tt.name, func(t *testing.T) {
+			data := make(map[string]interface{})
+			result, err := RenderTemplate(tt.template, data, tt.testTime)
 			if err != nil {
 				t.Fatalf("RenderTemplate failed: %v", err)
 			}
-			if result != tc.expected {
-				t.Errorf("Expected '%s', got '%s'", tc.expected, result)
+			if result != tt.expected {
+				t.Errorf("Expected '%s', got '%s'", tt.expected, result)
 			}
 		})
 	}
@@ -174,15 +175,15 @@ func TestRenderTemplate_FileContentTemplates(t *testing.T) {
 		},
 	}
 
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			data := prepareTestTimes(tc.testTime)
-			result, err := RenderTemplate(tc.template, data)
+	for _, tt := range testCases {
+		t.Run(tt.name, func(t *testing.T) {
+			data := make(map[string]interface{})
+			result, err := RenderTemplate(tt.template, data, tt.testTime)
 			if err != nil {
 				t.Fatalf("RenderTemplate failed: %v", err)
 			}
-			if result != tc.expected {
-				t.Errorf("Expected '%s', got '%s'", tc.expected, result)
+			if result != tt.expected {
+				t.Errorf("Expected '%s', got '%s'", tt.expected, result)
 			}
 		})
 	}

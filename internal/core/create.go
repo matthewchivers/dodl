@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 
 	"github.com/matthewchivers/dodl/pkg/config"
+	"github.com/matthewchivers/dodl/pkg/dateutils"
 	"github.com/matthewchivers/dodl/pkg/filesystem"
 	"github.com/matthewchivers/dodl/pkg/templating"
 	"github.com/matthewchivers/dodl/pkg/validation"
@@ -23,9 +24,12 @@ type CreateCommand struct {
 
 // Execute creates a new document based on the data/context in the CreateCommand
 func (c *CreateCommand) Execute() error {
+	refTime := c.AppCtx.ReferenceTime
+
 	data := map[string]interface{}{
-		"Today": c.AppCtx.StartTime,
-		"Topic": c.Topic,
+		"Today":     refTime,
+		"Topic":     c.Topic,
+		"WeekStart": dateutils.GetDefaultWeekStartDate(refTime),
 	}
 
 	data["DocName"] = c.DocName
@@ -38,7 +42,7 @@ func (c *CreateCommand) Execute() error {
 		data[k] = v
 	}
 
-	filename, err := templating.RenderTemplate(c.DocType.FileNamePattern, data)
+	filename, err := templating.RenderTemplate(c.DocType.FileNamePattern, data, refTime)
 	if err != nil {
 		return err
 	}
@@ -48,7 +52,7 @@ func (c *CreateCommand) Execute() error {
 
 	dirParts := []string{}
 	for _, part := range c.DocType.DirectoryPattern {
-		dirPart, err := templating.RenderTemplate(part, data)
+		dirPart, err := templating.RenderTemplate(part, data, refTime)
 		if err != nil {
 			return err
 		}
@@ -63,7 +67,7 @@ func (c *CreateCommand) Execute() error {
 	if err != nil {
 		return err
 	}
-	content, err := templating.RenderTemplate(string(templateData), data)
+	content, err := templating.RenderTemplate(string(templateData), data, refTime)
 	if err != nil {
 		return err
 	}

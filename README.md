@@ -1,14 +1,14 @@
-# dodl
+# `dodl`
 
-`dodl` is a command-line tool for creating structured documents quickly and effortlessly.  With a few simple comamnds, `dodl` generates documents and automatically organises them in appropriate directories, using templates you define.
-
-`dodl` supports standard plaintext documents such as `.txt` and `.md` (markdown).
+`dodl` is a command-line tool designed to save you time when creating structured plaintext documents.  Instead of spending time manually setting up your file system and formatting each document, `dodl` automates these steps, allowing you to focus on the content itself.  With just one command, `dodl` generates your document and places it in the right location, using templates you define.
 
 ### What Problem Does `dodl` Solve?
 
-Creating structured documents can be time-consuming.  Setting up folders, creating filenames, and ensuring consistent formatting takes effort. `dodl` automates these repetitive tasks, so you can focus directly on writing and getting work done.
+Creating and organising notes can be a time-consuming task, especially when you're trying to maintain consistency.  Imagine being in a meeting and needing to take notes quickly: before you know it, you've spent valuable time managing file names, directories, and document structure, all while the conversation moves forward.
 
-Explore `dodl` today and simplify your workflow.  For questions or suggestions, please open an issue on [GitHub](https://github.com/matthewchivers/dodl).
+`dodl` eliminates this overhead.  It automates the creation of structured documents, so you don’t have to worry about directory organisation or file formatting in the moment.  This lets you focus on what matters most: getting your ideas down fast and efficiently.
+
+If you have any questions or suggestions, feel free to open an issue on [GitHub](https://github.com/matthewchivers/dodl).
 
 ## Get Started
 
@@ -16,52 +16,57 @@ Here's how to get started with `dodl` in just a few steps:
 
 ### Installation
 
-Make sure you've got [golang](https://go.dev/doc/install) installed (preferably `1.23`) and then run:
+You can install `dodl` easily using Homebrew:
 
-```
-go install github.com/matthewchivers/dodl@latest
+```shell
+brew tap matthewchivers/dodl
+brew install dodl
 ```
 
 ### Initialise Your Workspace
 
-Navigate to a directory that is to be your `dodl` workspace and run:
-```
+To start using `dodl`, navigate to a directory where you'd like to store your documents, and initialize the workspace by running:
+
+```shell
 dodl init
 ```
 
-This command creates a `.dodl` directory in your current location.  This directory holds all configurations and templates that `dodl` uses to operate.
+This creates a `.dodl` directory in your current location, which stores all of the configuration files and templates that `dodl` uses to generate documents.
 
-### Create a document
+### Create a Document
 
-```
+Once your workspace is set up, you can create a document by specifying the document type you’ve defined in your `config.yaml` (see [configure your workspace](#configure-your-workspace)):
+
+```shell
 dodl create [document-type]
 ```
 
-Replace `[document-type]` with any document type you've defined in `config.yaml` (see [configure your workspace](#configure-your-workspace)).
+You can also override specific fields at runtime with custom values. For example:
 
-Override fields at runtime for custom values, example:
-
-```
-dodl create journal -d "20/03/2027" -t "Milestone Birthday Planning"
+```shell
+dodl create note --date "21/03/2027" --topic "Milestone Birthday Planning"
 ```
 
-The document will be saved based on your templates, e.g. `workspace/2027/March/20/journal-20-03-27.md`.
+For more on how the fields work and why they’re useful, see [Templating](#templating) below.
 
 ## Templating
 
-Use placeholders like `{{ .Now }}` or `{{ .Topic }}` to dynamically generate content in document templates, directory structures, or filenames.  `dodl` templating makes it easy to have consistent file naming, directory structuring, and document formatting.  The templating is simple to start with, but can be extended in powerful ways (see examples below).
+`dodl` includes a powerful templating system that allows you to dynamically generate content in your documents, directories, and filenames. By using placeholders like `{{ .Now }}` or `{{ .Topic }}`, you can create consistent structures across your files. It’s simple to get started with, but also flexible enough to handle more complex needs.
 
 #### Examples:
-* `{{ .Topic }}` where the Topic field is "Project X" -> `Project X`
-* `{{ .Topic | upper }}` where the Topic field is "Project X" -> `PROJECT X`
-* `{{ .Now | date "2006/01" }}` uses golang date formatting -> `2024/10`
-* `{{ addDays .Now 6 | date "02-01-06 }}` (if today is 28-Oct-24) -> `03-11-24`
 
-Templating uses golang's `text/template` alongside http://masterminds.github.io/sprig/ - which provides functions such as `upper` and `date` seen above.
+Fields can be configured (via `config.yaml` or overridden at runtime) and used as placeholders in your templates. For example, you can access the `Topic` field or use calculated fields like `Now`. Here are a few examples:
+
+* `{{ .Topic }}` – If your `Topic` field in `config.yaml` is "Project X", this will output: `Project X`.
+* `{{ .Topic | upper }}` – This will output the `Topic` in uppercase: `PROJECT X`.
+* `{{ .Now | date "2006/01" }}` – Outputs the current date in `yyyy/mm` format (e.g., `2024/10`).
+* `{{ addDays .Now 6 | date "02-01-06" }}` – If today is `28-Oct-24`, this will add six days and output `03-11-24`.
+
+The templating system uses Go’s `text/template` library along with the [Sprig functions](http://masterminds.github.io/sprig/), which add extra functionality like `upper` and `date` for date formatting and other dynamic operations.
 
 ## Configure Your Workspace
 
-Customise `dodl` by editing `.dodl/config.yaml`, and adding templates to `.dodl/templates`.
+Customise `dodl` by editing `.dodl/config.yaml` and adding templates to `.dodl/templates`. This allows you to tailor document types, fields, and storage patterns to match your workflow.
 
 ### Example `config.yaml`
 ``` yaml
@@ -72,9 +77,10 @@ document_types:
   journal:
     template_file: "journal.md"
     file_name_pattern: "journal-{{ .Now | date \"02-01-2006\" }}.md" # e.g. journal-28-10-24.md
-    directory_pattern: # e.g. 2024/October
+    directory_pattern: # e.g. 2024/October/journal
       - "{{ .Now | date \"2006\" }}"
       - "{{ .Now | date \"January\" }}"
+      - "journal"
     custom_fields:
       author: "First Name"
   meeting:
@@ -83,17 +89,18 @@ document_types:
     directory_pattern: [ "{{ .Now | date \"2006\"}}", "{{ .Now | date \"01\"}}" ]
 ```
 
+The above config sets up a default document type of `journal`, which will create files such as `journal-28-10-24.md` in a directory such as `2024/10/journal.`
+
 ### Template Files
 
-Example template using the custom field `author` (as in example config above).
+Document templates also take advantage of the same placeholder mechanism. For example, a `journal` template based on the example configuration above might look like:
 
 ``` md
 #  Journal Entry - {{ .Now | date "02 January 2006" }}
 
 **Author**: {{ .author }}
 
-## Thoughts
-
+## Daily Thoughts
 ...
 ```
 

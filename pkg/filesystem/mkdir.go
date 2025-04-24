@@ -40,18 +40,21 @@ func EnsureDirExists(path string) error {
 }
 
 // EnsureFileExists creates a file at the specified path if it does not already exist.
-// An error is returned if there is an error creating the file.
-func EnsureFileExists(path string, data []byte) error {
+// It returns a message indicating whether the file was created, already existed, or encountered an error.
+func EnsureFileExists(path string, data []byte) (string, error) {
 	dir := filepath.Dir(path)
 	if err := EnsureDirExists(dir); err != nil {
-		return err
+		return "", err
 	}
 
 	if _, err := os.Stat(path); os.IsNotExist(err) {
-		return WriteFile(path, data)
+		if writeErr := WriteFile(path, data); writeErr != nil {
+			return "", writeErr
+		}
+		return fmt.Sprintf("File created at %s", path), nil
 	}
 
-	return nil
+	return fmt.Sprintf("File already exists at %s", path), nil
 }
 
 // WriteFile writes the specified data to a file at the specified path.

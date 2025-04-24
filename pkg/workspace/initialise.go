@@ -18,7 +18,7 @@ func Initialise(targetDir string) error {
 	}
 
 	configYamlPath := filepath.Join(dodlDir, "config.yaml")
-	err = filesystem.EnsureFileExists(configYamlPath, []byte(""))
+	_, err = filesystem.EnsureFileExists(configYamlPath, []byte(""))
 	if err != nil {
 		return err
 	}

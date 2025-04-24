@@ -74,12 +74,14 @@ func (c *CreateCommand) Execute() error {
 
 	filepath := filepath.Join(c.Workspace.RootPath(), dirname, filename)
 
-	err = filesystem.EnsureFileExists(filepath, []byte(content))
+	msg, err := filesystem.EnsureFileExists(filepath, []byte(content))
 	if err != nil {
 		return err
 	}
 
-	fmt.Printf("Document created at %q\n", filepath)
+	if msg != "" {
+		fmt.Println(msg)
+	}
 
 	return nil
 }
